@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .hamburger-toggle {
+        @apply [&>div]:h-0 [&>div]:bg-white [&>div]:before:translate-y-0 [&>div]:before:rotate-45 [&>div]:after:translate-y-0 [&>div]:after:-rotate-45;
+    }
+    /* Calendar toggle switch */
+    button.switch-selected {
+        @apply [&>svg]:stroke-white bg-indigo-500 hover:bg-indigo-500 cursor-default;
+    }
+    /* Weekdays at the calendar */
+    .calendar-header{
+        @apply
+            font-light
+            w-full
+            h-8
+            md:h-10
+            flex
+            items-center
+            justify-center
+            ;
+    }
+    /* days at the calendar */
+    .calendar-cell{
+        @apply 
+            w-full
+            h-12
+            md:h-20
+            flex
+            items-center
+            justify-center
+            ;
+    }
+    .calendar-cell .day{
+        @apply 
+            items-center
+            justify-center
+            flex
+            cursor-pointer
+            w-8
+            md:w-9
+            h-8
+            md:h-9
+            rounded-full
+            select-none
+            ;
+    }
+    .today{
+        @apply
+            text-white
+            bg-indigo-500
+            ;
+    }
+    .holiday{
+        @apply
+            /* border-red-500
+            border-2 */
+            /* bg-rose-500 */
+            text-white
+            cursor-default
+            bg-du_red
+            ;
+    }
+    .selected {
+        top: calc(50% - 1rem - 6px);
+        right: calc(50% - 1rem - 6px);
+        @apply 
+            absolute
+            h-11
+            w-11
+            bg-indigo-100
+            -z-10
+            border-2
+            border-indigo-700
+            rounded-full
+            ;
+    }
+    .selected-start{
+        top: calc(50% - 1rem - 6px);
+        width: calc(50% + 22px);
+        @apply 
+            absolute
+            right-0
+            h-11
+            bg-indigo-100
+            -z-10
+            border-t-2
+            border-t-indigo-700
+            border-b-2
+            border-b-indigo-700
+            rounded-s-full
+            border-l-2
+            border-l-indigo-700
+            ;
+    }
+    .selected-middle{
+        top: calc(50% - 1rem - 6px);
+        /* width: calc(50% + 22px); */
+        @apply 
+            absolute
+            left-0
+            h-11
+            w-full
+            bg-indigo-100
+            -z-10
+            border-t-2
+            border-t-indigo-700
+            border-b-2
+            border-b-indigo-700
+            ;
+    }
+    .selected-end{
+        top: calc(50% - 1rem - 6px);
+        width: calc(50% + 22px);
+        @apply 
+            absolute
+            left-0
+            h-11
+            bg-indigo-100
+            -z-10
+            border-t-2
+            border-t-indigo-700
+            border-b-2
+            border-b-indigo-700
+            rounded-e-full
+            border-r-2
+            border-r-indigo-700
+            ;
+    }
+    .selected-days-info{
+        /* right: calc(50% - 120px); */
+        @apply
+            right-[calc(50%-120px)]
+            -top-5
+            w-60
+            absolute
+            z-20
+            bg-opacity-90
+            bg-indigo-100
+            border-2
+            border-indigo-600
+            p-3
+            rounded-xl
+    }
+    /* Tooltip style */
+    .tooltip{
+        @apply relative;
+    }
+    .tooltip-contents {
+        @apply 
+            invisible
+            absolute 
+            top-8
+            md:top-10
+            w-20
+            lg:w-28
+            bg-black
+            text-white
+            text-xs
+            p-1
+            rounded-md
+            text-center
+            bg-opacity-60
+            delay-500
+            z-30
+            ;
+    }
+    .tooltip:hover .tooltip-contents {
+        @apply visible;
+    }
+    .tooltip-contents-copied{
+        @apply 
+            visible
+            absolute 
+            w-14
+            -top-7
+            md:-top-7
+            bg-black
+            text-white
+            text-xs
+            py-1
+            px-2
+            rounded-md
+            text-center
+            bg-opacity-60
+            delay-500
+            z-30
+            overflow-hidden
+            ;
+    }
+
+    /* Timezone Table */
+    .timezone-delete-button-cell{
+        @apply p-1 min-w-20;
+    }
+    .timezone-header-cell {
+        @apply
+            text-center
+            font-normal
+            border-t
+            border-b
+            p-1
+            min-w-20
+            ;
+    }
+    .timezone-cell {
+        @apply 
+            text-right
+            border-t
+            border-b
+            p-1
+            min-w-20
+            ;
+    }
+    /* 
+    For Vue Apps
+    Avoid flapping
+     */
+    #calendar-app {
+        @apply
+            min-h-[474px]
+            md:min-h-[694px]
+    }
+}
+

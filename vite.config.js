@@ -11,6 +11,7 @@ export default defineConfig({
   root,
   build: {
     outDir,
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         index: resolve(root, 'index.html'),

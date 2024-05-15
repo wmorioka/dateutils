@@ -1,5 +1,5 @@
 <script setup>
-// import HelloWorld from '../components/HelloWorld.vue'
+import CalendarBody from './parts/CalendarBody.vue'
 import { ref } from 'vue'
 import dayjs from "dayjs"
 
@@ -7,6 +7,7 @@ const isTwoMonthMode = ref(false)
 const textThisMonth = ref("")
 const textNextMonth = ref("")
 const baseDate = ref(dayjs())
+const holidaysData = ref()
 /**
  * [
  *  {
@@ -22,52 +23,127 @@ const baseDate = ref(dayjs())
  *    month: 5,
  *    year: 2024,
  *  },
- *  {
- *  },
  * ]
  */
-const daysArray = ref([])
+const dateArray = ref([])
 
+init()
 updateMonthLabel()
-updateDaysArray()
+updatedateArray()
 
-function updateDaysArray(){
+function init(){
+  holidaysData.value = {
+    2024: {
+      1: {
+        1: "元旦",
+        8: "成人の日"
+      },
+      2: {
+        11: "建国記念の日",
+        12: "休日",
+        23: "天皇誕生日"
+      },
+      3: {
+        20: "春分の日"
+      },
+      4: {
+        29: "昭和の日"
+      },
+      5: {
+        3: "憲法記念日",
+        4: "みどりの日",
+        5: "こどもの日",
+        6: "振替休日"
+      },
+      7: {
+        15: "海の日"
+      },
+      8: {
+        11: "山の日",
+        12: "振替休日"
+      },
+      9: {
+        16: "敬老の日",
+        22: "秋分の日",
+        23: "振替休日"
+      },
+      10: {
+        14: "スポーツの日"
+      },
+      11: {
+        3: "文化の日",
+        4: "休日"
+      },
+      11: {
+        23: "勤労感謝の日"
+      },
+      12: {
+        30: "年末",
+        31: "大晦日"
+      }
+    }
+  }
+
+}
+function updatedateArray(){
   // Clone of baseDate
   let tmpDate = baseDate.value
-  let tmpDaysArray = []
+  let tmpdateArray = []
   const today = dayjs()
+  const todayYear = today.year()
+  const todayMonth = today.month()
+  const todayDate = today.date()
+
   for (let i = 0; i < 2; i++) {
     // Make day 1st
     tmpDate = tmpDate.date(1)
+    const tmpDateYear = tmpDate.year()
+    const tmpDateMonth = tmpDate.month()
     const endOfMonth = tmpDate.endOf("month").date()
-    let obj = { year: tmpDate.year(), month: tmpDate.month() + 1 }
+    let obj = { year: tmpDateYear, month: tmpDateMonth + 1 }
     let days = []
     for (let j = 0; j < endOfMonth; j++) {
-      let dateObj = { day: tmpDate.date(), dayOfWeek: tmpDate.day(), isHoliday: false, holidayLabel: "", isToday: false }
-      if (today.year() === tmpDate.year() && today.month() === tmpDate.month() && today.date() === tmpDate.date()){
+      let dateObj = { 
+        day: tmpDate.date(),
+        dayOfWeek: tmpDate.day(),
+        isHoliday: false,
+        holidayLabel: "",
+        isToday: false
+      }
+      if (todayYear === tmpDateYear 
+        && todayMonth === tmpDateMonth 
+        && todayDate === tmpDate.date()){
         dateObj.isToday = true
+      }
+      // console.log(holidaysData.value)
+      if (dateObj.isToday === false
+        && holidaysData.value[tmpDateYear] !== undefined
+        && holidaysData.value[tmpDateYear][tmpDateMonth + 1] !== undefined
+        && holidaysData.value[tmpDateYear][tmpDateMonth + 1][tmpDate.date()] !== undefined){
+        dateObj.isHoliday = true
+        dateObj.holidayLabel = holidaysData.value[tmpDateYear][tmpDateMonth + 1][tmpDate.date()]
       }
       days.push(dateObj)
       // this date will be next month at the last loop
       tmpDate = tmpDate.add(1, "day")
     }
     obj.days = days
-    tmpDaysArray.push(obj)
+    tmpdateArray.push(obj)
   }
-  daysArray.value = tmpDaysArray
-  console.log(daysArray.value)
+  dateArray.value = tmpdateArray
+  console.log(dateArray.value)
 }
 function prevMonth(){
   console.log("prevMonth()")
   baseDate.value = baseDate.value.subtract(1, "month")
   updateMonthLabel()
-  updateDaysArray()
+  updatedateArray()
 }
 function nextMonth(){
   console.log("nextMonth()")
   baseDate.value = baseDate.value.add(1, "month")
   updateMonthLabel()
-  updateDaysArray()
+  updatedateArray()
 }
 function showOneMonth(){
   console.log("showOneMonth()")
@@ -206,75 +282,9 @@ function addPreset2024JP(){
           <div id="calendar-container" class="grid grid-cols-1 gap-4 md:gap-6"
             :class="{ 'md:grid-cols-2': isTwoMonthMode }">
             <!-- First month -->
-            <div id="first-month">
-              <!-- header -->
-              <div class="flex mb-5 pt-1">
-                <span class="text-xl md:text-2xl select-none">{{ textThisMonth }}</span>
-              </div>
-              <!-- calendar body -->
-              <div>
-                <!-- Weekdays -->
-                <div
-                  class="grid grid-cols-7 text-sm md:text-xl border-b border-gray-200 font-light mb-1 md:mb-3 select-none">
-                  <span class="calendar-header">S<span class="hidden lg:inline">un</span></span>
-                  <span class="calendar-header">M<span class="hidden lg:inline">on</span></span>
-                  <span class="calendar-header">T<span class="hidden lg:inline">ue</span></span>
-                  <span class="calendar-header">W<span class="hidden lg:inline">ed</span></span>
-                  <span class="calendar-header">T<span class="hidden lg:inline">hu</span></span>
-                  <span class="calendar-header">F<span class="hidden lg:inline">ri</span></span>
-                  <span class="calendar-header">S<span class="hidden lg:inline">at</span></span>
-                </div>
-                <!-- days -->
-                <div class="grid grid-cols-7 text-base md:text-xl">
-                  <template v-for="item in daysArray[0].days[0].dayOfWeek">
-                    <div class="relative">
-                      <div class="calendar-cell"><span class=""></span></div>
-                    </div>
-                  </template>
-                  <template v-for="item in daysArray[0].days">
-                    <div class="relative">
-                      <div class="calendar-cell"><span class="day ":class="{ today: item.isToday }">{{ item.day }}</span></div>
-                    </div>
-                  </template>
-
-                </div>
-              </div>
-            </div>
-
+            <CalendarBody :label="textThisMonth" :dateArray="dateArray[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false"/>
             <!-- second month -->
-            <div id="second-month" :class="{ 'hidden': !isTwoMonthMode }">
-              <!-- header -->
-              <div class="flex mb-5 pt-1">
-                <span class="text-xl md:text-2xl select-none">{{ textNextMonth }}</span>
-              </div>
-              <!-- calendar body -->
-              <div>
-                <!-- Weekdays -->
-                <div class="grid grid-cols-7 text-sm md:text-xl border-b border-gray-200 mb-1 md:mb-3 select-none">
-                  <span class="calendar-header">S<span class="hidden lg:inline">un</span></span>
-                  <span class="calendar-header">M<span class="hidden lg:inline">on</span></span>
-                  <span class="calendar-header">T<span class="hidden lg:inline">ue</span></span>
-                  <span class="calendar-header">W<span class="hidden lg:inline">ed</span></span>
-                  <span class="calendar-header">T<span class="hidden lg:inline">hu</span></span>
-                  <span class="calendar-header">F<span class="hidden lg:inline">ri</span></span>
-                  <span class="calendar-header">S<span class="hidden lg:inline">at</span></span>
-                </div>
-                <!-- days -->
-                <div class="grid grid-cols-7 text-base md:text-xl">
-                  <template v-for="item in daysArray[1].days[0].dayOfWeek">
-                    <div class="relative">
-                      <div class="calendar-cell"><span class=""></span></div>
-                    </div>
-                  </template>
-                  <template v-for="item in daysArray[1].days">
-                    <div class="relative">
-                      <div class="calendar-cell"><span class="day " :class="{ today: item.isToday }">{{ item.day }}</span></div>
-                    </div>
-                  </template>
-
-                </div>
-              </div>
-            </div>
+            <CalendarBody :label="textNextMonth" :dateArray="dateArray[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true"/>
           </div>
         </div>
       </div>

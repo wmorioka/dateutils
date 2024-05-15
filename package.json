@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "devcss": "tailwindcss -i src/input.css -o src/dist.css --watch",
-    "buildcss": "tailwindcss -i src/input.css -o src/dist.css --minify"
+    "buildcss": "tailwindcss -i src/input.css -o src/dist.css --minify",
+    "deploy": "source .env && s3cmd --no-mime-magic --acl-public --delete-removed --delete-after sync dist/ s3://$BUCKET_NAME"
   },
   "dependencies": {
     "dayjs": "^1.11.11",

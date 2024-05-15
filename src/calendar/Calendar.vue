@@ -154,8 +154,8 @@ function showTwoMonths(){
   isTwoMonthMode.value = true
 }
 function updateMonthLabel(){
-  textThisMonth.value = baseDate.value.format("MMM YYYY")
-  textNextMonth.value = baseDate.value.add(1, "month").format("MMM YYYY")
+  textThisMonth.value = baseDate.value.format("MMMM YYYY")
+  textNextMonth.value = baseDate.value.add(1, "month").format("MMMM YYYY")
 }
 
 const isSettingOpened = ref(false)

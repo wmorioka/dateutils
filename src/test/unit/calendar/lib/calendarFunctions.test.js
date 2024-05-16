@@ -2,7 +2,7 @@ import createMonthData from '../../../../calendar/lib/calendarFunctions'
 import dayjs from 'dayjs'
 import { describe, expect, it, vi } from 'vitest'
 
-const TEST_DATE = '2024-01-01 00:00'
+const TEST_DATE = '2024-01-01'
 describe('createMonthData', ()=> {
     it('creates two month data', () => {
         const date = dayjs(TEST_DATE)
@@ -68,5 +68,54 @@ describe('createMonthData', ()=> {
         
         vi.useRealTimers()
     })
-    
+    it('sets selected-class: selected', () => {
+        const date = dayjs(TEST_DATE)
+        const testDate = 15
+        const selected = dayjs(`2024-01-${testDate}`)
+        const monthData = createMonthData(date, {}, selected)
+
+        expect(monthData[0].days[testDate - 1].isSelected).toBeTruthy()
+        expect(monthData[0].days[testDate - 1].selectedClass).toBe('selected')
+
+    })
+    it('sets selected-class: selected-start', () => {
+        const date = dayjs(TEST_DATE)
+        // Selected range is 2024-01-15 to 2024-01-17
+        const testStartDate = 15
+        const testEndDate = 17
+        const selectedStart = dayjs(`2024-01-${testStartDate}`)
+        const selectedEnd = dayjs(`2024-01-${testEndDate}`)
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+
+        expect(monthData[0].days[testStartDate - 1].isSelected).toBeTruthy()
+        expect(monthData[0].days[testStartDate - 1].selectedClass).toBe('selected-start')
+
+    })
+    it('sets selected-class: selected-middle', () => {
+        const date = dayjs(TEST_DATE)
+        // Selected range is 2024-01-15 to 2024-01-17
+        const testStartDate = 15
+        const testMiddleDate = 16
+        const testEndDate = 17
+        const selectedStart = dayjs(`2024-01-${testStartDate}`)
+        const selectedEnd = dayjs(`2024-01-${testEndDate}`)
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+
+        expect(monthData[0].days[testMiddleDate - 1].isSelected).toBeTruthy()
+        expect(monthData[0].days[testMiddleDate - 1].selectedClass).toBe('selected-middle')
+
+    })
+    it('sets selected-class: selected-end', () => {
+        const date = dayjs(TEST_DATE)
+        // Selected range is 2024-01-15 to 2024-01-17
+        const testStartDate = 15
+        const testEndDate = 17
+        const selectedStart = dayjs(`2024-01-${testStartDate}`)
+        const selectedEnd = dayjs(`2024-01-${testEndDate}`)
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+
+        expect(monthData[0].days[testEndDate - 1].isSelected).toBeTruthy()
+        expect(monthData[0].days[testEndDate - 1].selectedClass).toBe('selected-end')
+
+    })
 })

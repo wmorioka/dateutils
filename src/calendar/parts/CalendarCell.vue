@@ -5,12 +5,16 @@ defineProps(['date'])
 <template>
     <div class="relative">
         <div class="calendar-cell">
-            <span class="day" :class="{ today: date.isToday, holiday: date.isHoliday, tooltip: date.isHoliday }">
+            <span class="day" @click="$emit('cellClick', date.day)"
+                :class="{ today: date.isToday, holiday: date.isHoliday, tooltip: date.isHoliday }">
                 {{ date.day }}
                 <template v-if="date.isHoliday">
                     <span class="tooltip-contents">{{ date.holidayLabel }}</span>
                 </template>
             </span>
         </div>
+        <template v-if="date.isSelected">
+            <div class="select-container" class:="date.selectClass"></div>
+        </template>
     </div>
 </template>

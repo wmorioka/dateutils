@@ -21,7 +21,7 @@ import dayjs from 'dayjs'
  *  },
  * ]
  */
-export default function createMonthData(date, holiday) {
+export default function createMonthData(date, holiday, selectStartDate = null, selectEndDate = null) {
     let tmpDate = date
     let result = []
 
@@ -48,21 +48,43 @@ export default function createMonthData(date, holiday) {
                 day: tmpDateDate,
                 dayOfWeek: tmpDate.day(),
                 isHoliday: false,
-                holidayLabel: "",
-                isToday: false
+                holidayLabel: '',
+                isToday: false,
+                isSelected: false,
+                selectedClass: ''
             }
-            if (todayYear === tmpDateYear
-                && todayMonth === tmpDateMonth
-                && todayDate === tmpDateDate) {
-                dateObj.isToday = true
-            }
-            // console.log(holiday)
+            // Check today
+            dateObj.isToday = today.isSame(tmpDate)
+
+            // Check holiday
             if (dateObj.isToday === false
                 && holiday[tmpDateYear] !== undefined
                 && holiday[tmpDateYear][tmpDateMonth + 1] !== undefined
                 && holiday[tmpDateYear][tmpDateMonth + 1][tmpDateDate] !== undefined) {
                 dateObj.isHoliday = true
                 dateObj.holidayLabel = holiday[tmpDateYear][tmpDateMonth + 1][tmpDateDate]
+            }
+            // Check selected
+            if (selectStartDate !== null || selectEndDate !== null) {
+                if (selectStartDate !== null && selectEndDate === null) {
+                    // Select single date
+                    if (selectStartDate.isSame(tmpDate)) {
+                        dateObj.isSelected = true
+                        dateObj.selectedClass = 'selected'
+                    }
+                } else if (selectStartDate.isSame(tmpDate)) {
+                    // Select start
+                    dateObj.isSelected = true
+                    dateObj.selectedClass = 'selected-start'
+                } else if (selectEndDate.isSame(tmpDate)) {
+                    // Select end
+                    dateObj.isSelected = true
+                    dateObj.selectedClass = 'selected-end'
+                } else if (tmpDate.isAfter(selectStartDate) && tmpDate.isBefore(selectEndDate)) {
+                    // Select middle
+                    dateObj.isSelected = true
+                    dateObj.selectedClass = 'selected-middle'
+                }
             }
             days.push(dateObj)
             // this date will be next month at the last loop

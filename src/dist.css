@@ -1225,6 +1225,78 @@ button.switch-selected>svg {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.selected {
+  top: calc(50% - 1rem - 6px);
+  right: calc(50% - 1rem - 6px);
+  position: absolute;
+  z-index: -10;
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 9999px;
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 231 255 / var(--tw-bg-opacity));
+}
+
+.selected-start{
+  top: calc(50% - 1rem - 6px);
+  width: calc(50% + 22px);
+  position: absolute;
+  right: 0px;
+  z-index: -10;
+  height: 2.75rem;
+  border-start-start-radius: 9999px;
+  border-end-start-radius: 9999px;
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-top-color: rgb(67 56 202 / var(--tw-border-opacity));
+  border-bottom-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-border-opacity: 1;
+  border-left-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 231 255 / var(--tw-bg-opacity));
+}
+
+.selected-middle{
+  top: calc(50% - 1rem - 6px);
+  /* width: calc(50% + 22px); */
+  position: absolute;
+  left: 0px;
+  z-index: -10;
+  height: 2.75rem;
+  width: 100%;
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+  border-top-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-border-opacity: 1;
+  border-bottom-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 231 255 / var(--tw-bg-opacity));
+}
+
+.selected-end{
+  top: calc(50% - 1rem - 6px);
+  width: calc(50% + 22px);
+  position: absolute;
+  left: 0px;
+  z-index: -10;
+  height: 2.75rem;
+  border-start-end-radius: 9999px;
+  border-end-end-radius: 9999px;
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-top-color: rgb(67 56 202 / var(--tw-border-opacity));
+  border-bottom-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-border-opacity: 1;
+  border-right-color: rgb(67 56 202 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 231 255 / var(--tw-bg-opacity));
+}
+
 .selected-days-info{
   /* right: calc(50% - 120px); */
   position: absolute;

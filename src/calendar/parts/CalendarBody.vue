@@ -2,13 +2,16 @@
 import CalendarCell from './CalendarCell.vue'
 import CalendarEmptyCell from './CalendarEmptyCell.vue'
 
-defineProps([
-    'label', 
-    'monthData', 
-    'isTwoMonthMode', 
+const props = defineProps([
+    'monthData',
+    'isTwoMonthMode',
     'isSecondMonth'
 ])
+const emit = defineEmits(['cellClick'])
 
+function cellClick(date) {
+    emit('cellClick', props.monthData.year, props.monthData.month, date)
+}
 </script>
 
 <template>
@@ -32,7 +35,7 @@ defineProps([
             <!-- days -->
             <div class="grid grid-cols-7 text-base md:text-xl">
                 <CalendarEmptyCell v-for="_ in monthData.days[0].dayOfWeek" />
-                <CalendarCell v-for="date in monthData.days" :date="date" />
+                <CalendarCell v-for="date in monthData.days" :date="date" @cell-click="cellClick" />
             </div>
         </div>
     </div>

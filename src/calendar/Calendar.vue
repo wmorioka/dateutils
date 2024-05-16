@@ -145,7 +145,15 @@ function addPreset2024JP(){
 2024/11/23,勤労感謝の日`
 
 }
-
+/**
+ * Event Handler for calendar cell click event
+ * @param year 
+ * @param month 
+ * @param date 
+ */
+function cellClick(year, month, date){
+  console.log(`cell clicked: ${year}-${month}-${date}`)
+}
 </script>
 
 <template>
@@ -216,9 +224,9 @@ function addPreset2024JP(){
           <div id="calendar-container" class="grid grid-cols-1 gap-4 md:gap-6"
             :class="{ 'md:grid-cols-2': isTwoMonthMode }">
             <!-- First month -->
-            <CalendarBody :label="textThisMonth" :monthData="monthData[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false"/>
+            <CalendarBody :monthData="monthData[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false" @cell-click="cellClick"/>
             <!-- second month -->
-            <CalendarBody :label="textNextMonth" :monthData="monthData[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true"/>
+            <CalendarBody :monthData="monthData[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true" @cell-click="cellClick"/>
           </div>
         </div>
       </div>

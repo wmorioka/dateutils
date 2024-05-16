@@ -4,7 +4,7 @@ import CalendarEmptyCell from './CalendarEmptyCell.vue'
 
 defineProps([
     'label', 
-    'dateArray', 
+    'monthData', 
     'isTwoMonthMode', 
     'isSecondMonth'
 ])
@@ -15,7 +15,7 @@ defineProps([
     <div :class="{ 'hidden': isSecondMonth && !isTwoMonthMode }">
         <!-- header -->
         <div class="flex mb-5 pt-1">
-            <span class="text-xl md:text-2xl select-none">{{ label }}</span>
+            <span class="text-xl md:text-2xl select-none">{{ monthData.label }}</span>
         </div>
         <!-- calendar body -->
         <div>
@@ -31,8 +31,8 @@ defineProps([
             </div>
             <!-- days -->
             <div class="grid grid-cols-7 text-base md:text-xl">
-                <CalendarEmptyCell v-for="item in dateArray.days[0].dayOfWeek" />
-                <CalendarCell v-for="date in dateArray.days" :date="date" />
+                <CalendarEmptyCell v-for="_ in monthData.days[0].dayOfWeek" />
+                <CalendarCell v-for="date in monthData.days" :date="date" />
             </div>
         </div>
     </div>

@@ -2,34 +2,18 @@
 import CalendarBody from './parts/CalendarBody.vue'
 import { ref } from 'vue'
 import dayjs from "dayjs"
+import createMonthData from "./lib/calendarFunctions"
 
 const isTwoMonthMode = ref(false)
 const textThisMonth = ref("")
 const textNextMonth = ref("")
 const baseDate = ref(dayjs())
 const holidaysData = ref()
-/**
- * [
- *  {
- *    days:[
- *      {
- *        day: date of month
- *        dayOfWeek: numbers from 0 (Sunday) to 6 (Saturday).
- *        isHoliday: bool
- *        holidayLabel: String
- *        isToday: bool
- *      },
- *    ],
- *    month: 5,
- *    year: 2024,
- *  },
- * ]
- */
-const dateArray = ref([])
+// see ./lib/calendarFunctions
+const monthData = ref([])
 
 init()
-updateMonthLabel()
-updatedateArray()
+updateMonthData()
 
 function init(){
   holidaysData.value = {
@@ -85,65 +69,19 @@ function init(){
   }
 
 }
-function updatedateArray(){
-  // Clone of baseDate
-  let tmpDate = baseDate.value
-  let tmpdateArray = []
-  const today = dayjs()
-  const todayYear = today.year()
-  const todayMonth = today.month()
-  const todayDate = today.date()
 
-  for (let i = 0; i < 2; i++) {
-    // Make day 1st
-    tmpDate = tmpDate.date(1)
-    const tmpDateYear = tmpDate.year()
-    const tmpDateMonth = tmpDate.month()
-    const endOfMonth = tmpDate.endOf("month").date()
-    let obj = { year: tmpDateYear, month: tmpDateMonth + 1 }
-    let days = []
-    for (let j = 0; j < endOfMonth; j++) {
-      let dateObj = { 
-        day: tmpDate.date(),
-        dayOfWeek: tmpDate.day(),
-        isHoliday: false,
-        holidayLabel: "",
-        isToday: false
-      }
-      if (todayYear === tmpDateYear 
-        && todayMonth === tmpDateMonth 
-        && todayDate === tmpDate.date()){
-        dateObj.isToday = true
-      }
-      // console.log(holidaysData.value)
-      if (dateObj.isToday === false
-        && holidaysData.value[tmpDateYear] !== undefined
-        && holidaysData.value[tmpDateYear][tmpDateMonth + 1] !== undefined
-        && holidaysData.value[tmpDateYear][tmpDateMonth + 1][tmpDate.date()] !== undefined){
-        dateObj.isHoliday = true
-        dateObj.holidayLabel = holidaysData.value[tmpDateYear][tmpDateMonth + 1][tmpDate.date()]
-      }
-      days.push(dateObj)
-      // this date will be next month at the last loop
-      tmpDate = tmpDate.add(1, "day")
-    }
-    obj.days = days
-    tmpdateArray.push(obj)
-  }
-  dateArray.value = tmpdateArray
-  console.log(dateArray.value)
+function updateMonthData(){
+  monthData.value = createMonthData(baseDate.value, holidaysData.value)
 }
 function prevMonth(){
   console.log("prevMonth()")
   baseDate.value = baseDate.value.subtract(1, "month")
-  updateMonthLabel()
-  updatedateArray()
+  updateMonthData()
 }
 function nextMonth(){
   console.log("nextMonth()")
   baseDate.value = baseDate.value.add(1, "month")
-  updateMonthLabel()
-  updatedateArray()
+  updateMonthData()
 }
 function showOneMonth(){
   console.log("showOneMonth()")
@@ -153,13 +91,9 @@ function showTwoMonths(){
   console.log("showTwoMonths()")
   isTwoMonthMode.value = true
 }
-function updateMonthLabel(){
-  textThisMonth.value = baseDate.value.format("MMMM YYYY")
-  textNextMonth.value = baseDate.value.add(1, "month").format("MMMM YYYY")
-}
 
 const isSettingOpened = ref(false)
-const historyData = ref("")
+const holidaysCSVText = ref("")
 function toggleSettings(){
   isSettingOpened.value = !isSettingOpened.value
 }
@@ -168,10 +102,10 @@ function saveHistoryData(){
 
 }
 function addPreset2024US(){
-  if (historyData.value !== "") {
-    historyData.value += "\n"
+  if (holidaysCSVText.value !== "") {
+    holidaysCSVText.value += "\n"
   }
-  historyData.value = historyData.value + `2024/01/01,New Year's Day
+  holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,New Year's Day
 2024/01/15,Martin Luther King Jr. Day
 2024/02/19,Presidents' Day
 2024/05/27,Memorial Day
@@ -185,10 +119,10 @@ function addPreset2024US(){
 
 }
 function addPreset2024JP(){
-  if (historyData.value !== ""){
-    historyData.value += "\n"
+  if (holidaysCSVText.value !== ""){
+    holidaysCSVText.value += "\n"
   }
-  historyData.value = historyData.value + `2024/01/01,元日
+  holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,元日
 2024/01/08,成人の日
 2024/02/11,建国記念の日
 2024/02/12,休日
@@ -282,9 +216,9 @@ function addPreset2024JP(){
           <div id="calendar-container" class="grid grid-cols-1 gap-4 md:gap-6"
             :class="{ 'md:grid-cols-2': isTwoMonthMode }">
             <!-- First month -->
-            <CalendarBody :label="textThisMonth" :dateArray="dateArray[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false"/>
+            <CalendarBody :label="textThisMonth" :monthData="monthData[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false"/>
             <!-- second month -->
-            <CalendarBody :label="textNextMonth" :dateArray="dateArray[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true"/>
+            <CalendarBody :label="textNextMonth" :monthData="monthData[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true"/>
           </div>
         </div>
       </div>
@@ -319,7 +253,7 @@ function addPreset2024JP(){
 
           <div class="sm:col-span-9">
             <div class="sm:flex">
-              <textarea v-model="historyData"
+              <textarea v-model="holidaysCSVText"
                 class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 id="holidays-data" placeholder="YYYY-MM-DD,Holiday Name" name="holidays-data" rows="7"
                 cols="40"></textarea>

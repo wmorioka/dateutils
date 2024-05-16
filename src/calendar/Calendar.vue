@@ -1,12 +1,12 @@
 <script setup>
 import CalendarBody from './parts/CalendarBody.vue'
 import { ref } from 'vue'
-import dayjs from "dayjs"
-import createMonthData from "./lib/calendarFunctions"
+import dayjs from 'dayjs'
+import createMonthData from './lib/calendarFunctions'
 
 const isTwoMonthMode = ref(false)
-const textThisMonth = ref("")
-const textNextMonth = ref("")
+const textThisMonth = ref('')
+const textNextMonth = ref('')
 const baseDate = ref(dayjs())
 const holidaysData = ref()
 // see ./lib/calendarFunctions
@@ -19,51 +19,51 @@ function init(){
   holidaysData.value = {
     2024: {
       1: {
-        1: "元旦",
-        8: "成人の日"
+        1: '元旦',
+        8: '成人の日'
       },
       2: {
-        11: "建国記念の日",
-        12: "休日",
-        23: "天皇誕生日"
+        11: '建国記念の日',
+        12: '休日',
+        23: '天皇誕生日'
       },
       3: {
-        20: "春分の日"
+        20: '春分の日'
       },
       4: {
-        29: "昭和の日"
+        29: '昭和の日'
       },
       5: {
-        3: "憲法記念日",
-        4: "みどりの日",
-        5: "こどもの日",
-        6: "振替休日"
+        3: '憲法記念日',
+        4: 'みどりの日',
+        5: 'こどもの日',
+        6: '振替休日'
       },
       7: {
-        15: "海の日"
+        15: '海の日'
       },
       8: {
-        11: "山の日",
-        12: "振替休日"
+        11: '山の日',
+        12: '振替休日'
       },
       9: {
-        16: "敬老の日",
-        22: "秋分の日",
-        23: "振替休日"
+        16: '敬老の日',
+        22: '秋分の日',
+        23: '振替休日'
       },
       10: {
-        14: "スポーツの日"
+        14: 'スポーツの日'
       },
       11: {
-        3: "文化の日",
-        4: "休日"
+        3: '文化の日',
+        4: '休日'
       },
       11: {
-        23: "勤労感謝の日"
+        23: '勤労感謝の日'
       },
       12: {
-        30: "年末",
-        31: "大晦日"
+        30: '年末',
+        31: '大晦日'
       }
     }
   }
@@ -74,26 +74,26 @@ function updateMonthData(){
   monthData.value = createMonthData(baseDate.value, holidaysData.value)
 }
 function prevMonth(){
-  console.log("prevMonth()")
-  baseDate.value = baseDate.value.subtract(1, "month")
+  console.log('prevMonth()')
+  baseDate.value = baseDate.value.subtract(1, 'month')
   updateMonthData()
 }
 function nextMonth(){
-  console.log("nextMonth()")
-  baseDate.value = baseDate.value.add(1, "month")
+  console.log('nextMonth()')
+  baseDate.value = baseDate.value.add(1, 'month')
   updateMonthData()
 }
 function showOneMonth(){
-  console.log("showOneMonth()")
+  console.log('showOneMonth()')
   isTwoMonthMode.value = false
 }
 function showTwoMonths(){
-  console.log("showTwoMonths()")
+  console.log('showTwoMonths()')
   isTwoMonthMode.value = true
 }
 
 const isSettingOpened = ref(false)
-const holidaysCSVText = ref("")
+const holidaysCSVText = ref('')
 function toggleSettings(){
   isSettingOpened.value = !isSettingOpened.value
 }
@@ -102,7 +102,7 @@ function saveHistoryData(){
 
 }
 function addPreset2024US(){
-  if (holidaysCSVText.value !== "") {
+  if (holidaysCSVText.value !== '') {
     holidaysCSVText.value += "\n"
   }
   holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,New Year's Day
@@ -119,7 +119,7 @@ function addPreset2024US(){
 
 }
 function addPreset2024JP(){
-  if (holidaysCSVText.value !== ""){
+  if (holidaysCSVText.value !== ''){
     holidaysCSVText.value += "\n"
   }
   holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,元日

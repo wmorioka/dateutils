@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 /**
  * Create two months' data. First month is provided parameter's month. Second month is next month of parameter's month.
  * @param Dayjs date: instance of Dayjs object.
@@ -35,11 +35,11 @@ export default function createMonthData(date, holiday) {
         tmpDate = tmpDate.date(1)
         const tmpDateYear = tmpDate.year()
         const tmpDateMonth = tmpDate.month()
-        const endOfMonth = tmpDate.endOf("month").date()
+        const endOfMonth = tmpDate.endOf('month').date()
         let obj = { 
             year: tmpDateYear,
             month: tmpDateMonth + 1,
-            label: tmpDate.format("MMMM YYYY")
+            label: tmpDate.format('MMMM YYYY')
         }
         let days = []
         for (let j = 0; j < endOfMonth; j++) {
@@ -66,7 +66,7 @@ export default function createMonthData(date, holiday) {
             }
             days.push(dateObj)
             // this date will be next month at the last loop
-            tmpDate = tmpDate.add(1, "day")
+            tmpDate = tmpDate.add(1, 'day')
         }
         obj.days = days
         result.push(obj)

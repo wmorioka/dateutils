@@ -1,33 +1,33 @@
-import createMonthData from "../../../../calendar/lib/calendarFunctions"
-import dayjs from "dayjs"
+import createMonthData from '../../../../calendar/lib/calendarFunctions'
+import dayjs from 'dayjs'
 import { describe, expect, it, vi } from 'vitest'
 
 const TEST_DATE = '2024-01-01 00:00'
 describe('createMonthData', ()=> {
-    it('should create two month data', () => {
+    it('creates two month data', () => {
         const date = dayjs(TEST_DATE)
         const monthData = createMonthData(date, {})
         expect(monthData.length).toBe(2)
     })
-    it('should have year', () => {
+    it('has year', () => {
         const date = dayjs(TEST_DATE)
         const monthData = createMonthData(date, {})
         expect(monthData[0].year).toBe(2024)
         expect(monthData[1].year).toBe(2024)
     })
-    it('should have month', () => {
+    it('has month', () => {
         const date = dayjs(TEST_DATE)
         const monthData = createMonthData(date, {})
         expect(monthData[0].month).toBe(1)
         expect(monthData[1].month).toBe(2)
     })
-    it('should have label', () => {
+    it('has label', () => {
         const date = dayjs(TEST_DATE)
         const monthData = createMonthData(date, {})
         expect(monthData[0].label).toBe('January 2024')
         expect(monthData[1].label).toBe('February 2024')
     })
-    it('should have days', () => {
+    it('has days', () => {
         const date = dayjs(TEST_DATE)
         const monthData = createMonthData(date, {})
         // There are 31 days in January 2024
@@ -35,7 +35,7 @@ describe('createMonthData', ()=> {
         // There are 29 days in Feb 2024
         expect(monthData[1].days.length).toBe(29)
     })
-    it('should set Jan 1st as holiday', () => {
+    it('sets Jan 1st as holiday', () => {
         const date = dayjs(TEST_DATE)
         const holidayName = 'test holiday name'
         const holiday = { 2024: { 1: { 1: holidayName }}}
@@ -47,7 +47,7 @@ describe('createMonthData', ()=> {
         expect(monthData[0].days[1].isHoliday).toBeFalsy()
         expect(monthData[0].days[1].holidayLabel).toBe('')
     })
-    it('should set todays flag', () => {
+    it('sets todays flag', () => {
         vi.useFakeTimers()
         // Set system date as 2024-01-01
         const fakeDate = new Date(2024, 0, 1)
@@ -67,6 +67,6 @@ describe('createMonthData', ()=> {
         expect(monthData[0].days[1].isToday).toBeFalsy()
         
         vi.useRealTimers()
-
     })
+    
 })

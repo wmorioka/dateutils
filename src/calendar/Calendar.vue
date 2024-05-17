@@ -78,10 +78,8 @@ function init(){
 
 function updateMonthData(){
   monthData.value = createMonthData(baseDate.value, holidaysData.value, selectStartDate.value, selectEndDate.value)
-  if (selectStartDate.value !== null && selectEndDate.value !== null){
-    selectedDaysInfo.value = createSelectedDaysInfo(monthData.value, selectStartDate.value, selectEndDate.value)
-    console.log(selectedDaysInfo.value)
-  }
+  selectedDaysInfo.value = createSelectedDaysInfo(monthData.value, selectStartDate.value, selectEndDate.value)
+  console.log(selectedDaysInfo.value)
 }
 function prevMonth(){
   console.log('prevMonth()')
@@ -196,6 +194,12 @@ function cellClick(year, month, date){
   }
   updateMonthData()
 }
+function closeButtonClick(){
+  isShowSelectedDaysInfo.value = false
+}
+function copyButtonClick(){
+  navigator.clipboard.writeText(selectedDaysInfo.value.label)
+}
 </script>
 
 <template>
@@ -206,13 +210,13 @@ function cellClick(year, month, date){
       <div class="w-full">
         <div class="relative">
           <!-- Selected Days Info -->
-          <div v-if="isShowSelectedDaysInfo" class="selected-days-info">
+          <div class="selected-days-info" :class="{ 'hidden': !isShowSelectedDaysInfo }">
             <div class="p-3 px-10 text-center relative">
               <span class="flex justify-center">
                 <div>{{ selectedDaysInfo.label }}</div>
                 <span class="tooltip ml-1 pt-1 flex justify-center">
                   <!-- <span class="tooltip-contents-copied">Copied</span> -->
-                  <svg
+                  <svg @click="copyButtonClick"
                     class="w-4 h-4 inline cursor-pointer js-clipboard-default flex-shrink-0 size-4 hover:stroke-indigo-500"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">
@@ -221,9 +225,10 @@ function cellClick(year, month, date){
                   </svg>
                 </span>
               </span>
-              <span class="block">{{ selectedDaysInfo.duration }} days ({{ selectedDaysInfo.businessDays }} business days)</span>
+              <span class="block">{{ selectedDaysInfo.duration }} days ({{ selectedDaysInfo.businessDays }} business
+                days)</span>
               <!-- close button -->
-              <button class="absolute right-1 top-1">
+              <button class="absolute right-1 top-1" @click="closeButtonClick">
                 <svg class="w-6 h-6 inline cursor-pointer flex-shrink-0 size-4" viewBox="0 0 24 24">
                   <path
                     d="M18,6h0a1,1,0,0,0-1.414,0L12,10.586,7.414,6A1,1,0,0,0,6,6H6A1,1,0,0,0,6,7.414L10.586,12,6,16.586A1,1,0,0,0,6,18H6a1,1,0,0,0,1.414,0L12,13.414,16.586,18A1,1,0,0,0,18,18h0a1,1,0,0,0,0-1.414L13.414,12,18,7.414A1,1,0,0,0,18,6Z" />

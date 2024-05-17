@@ -188,4 +188,17 @@ describe('createSelectedDaysInfo', () => {
             expect(selectedDaysInfo.businessDays).toBe(expected)
         })
     })
+    describe('selectStartDate or selectEndDate is null', () => {
+        it('properties are empty', () => {
+            const date = dayjs(TEST_DATE)
+            const startDateLabel = '2024-01-28'
+            const endDateLabel = '2024-02-03'
+            const selectedStart = dayjs(startDateLabel)
+            const selectedEnd = dayjs(endDateLabel)
+            const expected = { label: '', duration: 0, businessDays: 0 }
+            const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+            const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, null)
+            expect(selectedDaysInfo).toEqual(expected)
+        })
+    })
 })

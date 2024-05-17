@@ -111,7 +111,11 @@ export function createMonthData(date, holiday, selectStartDate = null, selectEnd
  */
 export function createSelectedDaysInfo(monthData, selectStartDate, selectEndDate){
     const format = 'YYYY/MM/DD'
-    let obj = { label: `${selectStartDate.format(format)} - ${selectEndDate.format(format) }` }
+    let obj = { label: '', duration: 0, businessDays: 0 }
+    if (selectStartDate === null || selectEndDate === null){
+        return obj
+    }
+    obj.label = `${selectStartDate.format(format)} - ${selectEndDate.format(format) }`
     obj.duration = selectEndDate.diff(selectStartDate, 'day') + 1
     let nonBusinessDays = 0
     for (let i = 0; i < 2; i++) {

@@ -24,11 +24,9 @@ import dayjs from 'dayjs'
 export default function createMonthData(date, holiday, selectStartDate = null, selectEndDate = null) {
     let tmpDate = date
     let result = []
-
-    const today = dayjs()
-    const todayYear = today.year()
-    const todayMonth = today.month()
-    const todayDate = today.date()
+    console.log(`selectStartDate is ${selectStartDate}`)
+    console.log(`selectEndDate is ${selectEndDate}`)
+    const today = dayjs(dayjs().format('YYYY-MM-DD'))
 
     for (let i = 0; i < 2; i++) {
         // Set 1st date
@@ -68,7 +66,10 @@ export default function createMonthData(date, holiday, selectStartDate = null, s
             if (selectStartDate !== null || selectEndDate !== null) {
                 if (selectStartDate !== null && selectEndDate === null) {
                     // Select single date
+                    console.log(`tmpDate is ${tmpDate}`)
+                    console.log(selectStartDate.isSame(tmpDate))
                     if (selectStartDate.isSame(tmpDate)) {
+                        console.log('Select single date')
                         dateObj.isSelected = true
                         dateObj.selectedClass = 'selected'
                     }

@@ -3,19 +3,23 @@ import CalendarBody from './parts/CalendarBody.vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
 import createMonthData from './lib/calendarFunctions'
+import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
 
 const isTwoMonthMode = ref(false)
-const textThisMonth = ref('')
-const textNextMonth = ref('')
-const baseDate = ref(dayjs())
+const baseDate = ref()
 const holidaysData = ref()
 // see ./lib/calendarFunctions
 const monthData = ref([])
+const state = ref(new SelectState())
+const selectStartDate = ref(null)
+const selectEndDate = ref(null)
 
 init()
 updateMonthData()
 
 function init(){
+  // This is to emit hour, minute, second and milisecond
+  baseDate.value = dayjs(dayjs().format('YYYY-MM-DD'))
   holidaysData.value = {
     2024: {
       1: {
@@ -71,7 +75,7 @@ function init(){
 }
 
 function updateMonthData(){
-  monthData.value = createMonthData(baseDate.value, holidaysData.value)
+  monthData.value = createMonthData(baseDate.value, holidaysData.value, selectStartDate.value, selectEndDate.value)
 }
 function prevMonth(){
   console.log('prevMonth()')
@@ -153,6 +157,36 @@ function addPreset2024JP(){
  */
 function cellClick(year, month, date){
   console.log(`cell clicked: ${year}-${month}-${date}`)
+  console.log(`selectState: ${state.value.currentState}`)
+  const selectedDate = dayjs(new Date(year, month - 1, date))
+  if (state.value.currentState === SELECT_NONE){
+    // No date selected yet
+    selectStartDate.value = selectedDate
+    state.value.next()
+  } else if (state.value.currentState === SELECT_SINGLE){
+    if (selectedDate.isSame(selectStartDate.value)) {
+      selectStartDate.value = null
+      state.value.reset()
+    } else {
+      // selectStartDate < selectedDate
+      if (selectStartDate.value.isBefore(selectedDate)) {
+        selectEndDate.value = selectedDate
+        state.value.next()
+      } else {
+        // selectedDate < selectStartDate then swap
+        const tmp = selectStartDate.value
+        selectStartDate.value = selectedDate
+        selectEndDate.value = tmp
+        state.value.next()
+      }
+    }
+  } else if (state.value.currentState === SELECT_DOUBLE) {
+    // remove selection
+    selectStartDate.value = null
+    selectEndDate.value = null
+    state.value.next()
+  }
+  updateMonthData()
 }
 </script>
 

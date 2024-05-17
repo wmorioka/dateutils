@@ -14,7 +14,7 @@ defineProps(['date'])
             </span>
         </div>
         <template v-if="date.isSelected">
-            <div class="select-container" class:="date.selectClass"></div>
+            <div class="select-container" :class="date.selectedClass"></div>
         </template>
     </div>
 </template>

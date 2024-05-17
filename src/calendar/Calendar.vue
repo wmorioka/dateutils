@@ -14,6 +14,8 @@ const selectStartDate = ref(null)
 const selectEndDate = ref(null)
 const selectedDaysInfo = ref()
 const isShowSelectedDaysInfo = ref(false)
+const isShowCopyTooltip = ref(false)
+const copyToolipTimer = ref()
 
 init()
 
@@ -219,7 +221,12 @@ function closeButtonClick(){
  * Event Handler for copy button of selected days info area
  */
 function copyButtonClick(){
+  clearTimeout(copyToolipTimer.value)
   navigator.clipboard.writeText(selectedDaysInfo.value.label)
+  isShowCopyTooltip.value = true
+  copyToolipTimer.value = setTimeout(() => {
+    isShowCopyTooltip.value = false
+  }, 1000);
 }
 </script>
 
@@ -236,7 +243,7 @@ function copyButtonClick(){
               <span class="flex justify-center">
                 <div>{{ selectedDaysInfo.label }}</div>
                 <span class="tooltip ml-1 pt-1 flex justify-center">
-                  <span class="tooltip-contents-copied">Copied</span>
+                  <span class="tooltip-contents-copied" :class="{ 'hidden': !isShowCopyTooltip }">Copied</span>
                   <svg @click="copyButtonClick"
                     class="w-4 h-4 inline cursor-pointer js-clipboard-default flex-shrink-0 size-4 hover:stroke-indigo-500"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

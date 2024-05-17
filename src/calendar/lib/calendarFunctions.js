@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 /**
  * Create two months' data. First month is provided parameter's month. Second month is next month of parameter's month.
- * @param Dayjs date: instance of Dayjs object.
- * @param Object holiday: instance of Holiday
- * @return array
+ * @param {dayjs} date - instance of Dayjs object.
+ * @param {Object} holiday - instance of Holiday
+ * @param {dayjs} [selectStartDate=null] - (Optional) Start date of selection
+ * @param {dayjs} [selectEndDate=null] - (Optional) End date of selection
+ * @return {Array}
  * [
  *  {
  *    label: "December 2024",
@@ -21,7 +23,7 @@ import dayjs from 'dayjs'
  *  },
  * ]
  */
-export default function createMonthData(date, holiday, selectStartDate = null, selectEndDate = null) {
+export function createMonthData(date, holiday, selectStartDate = null, selectEndDate = null) {
     let tmpDate = date
     let result = []
     console.log(`selectStartDate is ${selectStartDate}`)
@@ -65,10 +67,10 @@ export default function createMonthData(date, holiday, selectStartDate = null, s
             if (selectStartDate !== null || selectEndDate !== null) {
                 if (selectStartDate !== null && selectEndDate === null) {
                     // Select single date
-                    console.log(`tmpDate is ${tmpDate}`)
-                    console.log(selectStartDate.isSame(tmpDate))
+                    // console.log(`tmpDate is ${tmpDate}`)
+                    // console.log(selectStartDate.isSame(tmpDate))
                     if (selectStartDate.isSame(tmpDate)) {
-                        console.log('Select single date')
+                        // console.log('Select single date')
                         dateObj.isSelected = true
                         dateObj.selectedClass = 'selected'
                     }
@@ -95,4 +97,33 @@ export default function createMonthData(date, holiday, selectStartDate = null, s
     }
     console.log(result)
     return result
+}
+
+/**
+ * 
+ * @param {Array} monthData - 
+ * @return {object} Selected days info
+ * {
+ *   label: '2024/05/01 - 2024/05/09',
+ *   duration: 9,
+ *   businessDays: 5
+ * }
+ */
+export function createSelectedDaysInfo(monthData, selectStartDate, selectEndDate){
+    const format = 'YYYY/MM/DD'
+    let obj = { label: `${selectStartDate.format(format)} - ${selectEndDate.format(format) }` }
+    obj.duration = selectEndDate.diff(selectStartDate, 'day') + 1
+    let nonBusinessDays = 0
+    for (let i = 0; i < 2; i++) {
+        const holidays = monthData[i].days.filter(date => {
+            return date.isHoliday && date.isSelected
+        })
+        nonBusinessDays += holidays.length
+        const weekends = monthData[i].days.filter(date => {
+            return !date.isHoliday && date.isSelected && (date.dayOfWeek === 0 || date.dayOfWeek === 6)
+        })
+        nonBusinessDays += weekends.length
+    }
+    obj.businessDays = obj.duration - nonBusinessDays
+    return obj
 }

@@ -1,4 +1,4 @@
-import createMonthData from '../../../../calendar/lib/calendarFunctions'
+import { createMonthData, createSelectedDaysInfo } from '../../../../calendar/lib/calendarFunctions'
 import dayjs from 'dayjs'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -116,5 +116,76 @@ describe('createMonthData', ()=> {
         expect(monthData[0].days[testEndDate - 1].isSelected).toBeTruthy()
         expect(monthData[0].days[testEndDate - 1].selectedClass).toBe('selected-end')
 
+    })
+})
+
+describe('createSelectedDaysInfo', () => {
+    it('has label', () => {
+        const date = dayjs(TEST_DATE)
+        const startDateLabel = '2024-01-01'
+        const endDateLabel = '2024-01-15'
+        const selectedStart = dayjs(startDateLabel)
+        const selectedEnd = dayjs(endDateLabel)
+        const format = 'YYYY/MM/DD'
+        const expected = `${selectedStart.format(format)} - ${selectedEnd.format(format) }`
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedDaysInfo.label).toBe(expected)
+    })
+    it('has duration', () => {
+        const date = dayjs(TEST_DATE)
+        const startDateLabel = '2024-01-01'
+        const endDateLabel = '2024-01-15'
+        const selectedStart = dayjs(startDateLabel)
+        const selectedEnd = dayjs(endDateLabel)
+        const expected = 15
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedDaysInfo.duration).toBe(expected)
+    })
+    it('has businessDays', () => {
+        const date = dayjs(TEST_DATE)
+        const startDateLabel = '2024-01-01'
+        const endDateLabel = '2024-01-15'
+        const selectedStart = dayjs(startDateLabel)
+        const selectedEnd = dayjs(endDateLabel)
+        const expected = 11
+        const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedDaysInfo.businessDays).toBe(expected)
+    })
+    it('businessDays excludes holidays', () => {
+        const holiday = { 
+            2024: { 
+                1: { 
+                    1: 'test holiday1',
+                    2: 'test holiday2',
+                    3: 'test holiday3',
+                    8: 'test holiday4'
+                } 
+            } 
+        }
+        const date = dayjs(TEST_DATE)
+        const startDateLabel = '2024-01-01'
+        const endDateLabel = '2024-01-15'
+        const selectedStart = dayjs(startDateLabel)
+        const selectedEnd = dayjs(endDateLabel)
+        const expected = 7
+        const monthData = createMonthData(date, holiday, selectedStart, selectedEnd)
+        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedDaysInfo.businessDays).toBe(expected)
+    })
+    describe('selected range overwrap to next month', () => {
+        it('has businessDays', () => {
+            const date = dayjs(TEST_DATE)
+            const startDateLabel = '2024-01-28'
+            const endDateLabel = '2024-02-03'
+            const selectedStart = dayjs(startDateLabel)
+            const selectedEnd = dayjs(endDateLabel)
+            const expected = 5
+            const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
+            const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
+            expect(selectedDaysInfo.businessDays).toBe(expected)
+        })
     })
 })

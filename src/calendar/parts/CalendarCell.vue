@@ -6,7 +6,7 @@ defineProps(['date'])
     <div class="relative">
         <div class="calendar-cell">
             <span class="day" @click="$emit('cellClick', date.day)"
-                :class="{ today: date.isToday, holiday: date.isHoliday, tooltip: date.isHoliday }">
+                :class="{ today: date.isToday, holiday: date.isHoliday && !date.isToday, tooltip: date.isHoliday }">
                 {{ date.day }}
                 <template v-if="date.isHoliday">
                     <span class="tooltip-contents">{{ date.holidayLabel }}</span>

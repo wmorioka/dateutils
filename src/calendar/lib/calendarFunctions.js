@@ -55,8 +55,7 @@ export default function createMonthData(date, holiday, selectStartDate = null, s
             dateObj.isToday = today.isSame(tmpDate)
 
             // Check holiday
-            if (dateObj.isToday === false
-                && holiday[tmpDateYear] !== undefined
+            if (holiday[tmpDateYear] !== undefined
                 && holiday[tmpDateYear][tmpDateMonth + 1] !== undefined
                 && holiday[tmpDateYear][tmpDateMonth + 1][tmpDateDate] !== undefined) {
                 dateObj.isHoliday = true

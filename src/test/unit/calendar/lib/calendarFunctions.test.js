@@ -59,10 +59,9 @@ describe('createMonthData', ()=> {
         const monthData = createMonthData(date, holiday)
         // Jan 1 should be today
         expect(monthData[0].days[0].isToday).toBeTruthy()
-        // Jan 1 should not be holiday. 
-        // If today is holiday, isToday should be true and isHoliday should be false
-        expect(monthData[0].days[0].isHoliday).toBeFalsy()
-        expect(monthData[0].days[0].holidayLabel).toBe('')
+        // Jan 1 should be holiday. 
+        expect(monthData[0].days[0].isHoliday).toBeTruthy()
+        expect(monthData[0].days[0].holidayLabel).toBe('test holiday name')
         // Jan 2 should not be today
         expect(monthData[0].days[1].isToday).toBeFalsy()
         

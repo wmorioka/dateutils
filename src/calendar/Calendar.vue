@@ -8,7 +8,6 @@ import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/se
 const isTwoMonthMode = ref(false)
 const baseDate = ref()
 const holidaysData = ref()
-// see ./lib/calendarFunctions
 const monthData = ref([])
 const state = ref(new SelectState())
 const selectStartDate = ref(null)
@@ -17,8 +16,10 @@ const selectedDaysInfo = ref()
 const isShowSelectedDaysInfo = ref(false)
 
 init()
-updateMonthData()
 
+/**
+ * Initialize base date and holidays data
+ */
 function init(){
   // This is to emit hour, minute, second and milisecond
   baseDate.value = dayjs(dayjs().format('YYYY-MM-DD'))
@@ -73,28 +74,42 @@ function init(){
       }
     }
   }
-
+  updateMonthData()
 }
-
+/**
+ * Update months data. This data is used for calendar
+ */
 function updateMonthData(){
   monthData.value = createMonthData(baseDate.value, holidaysData.value, selectStartDate.value, selectEndDate.value)
   selectedDaysInfo.value = createSelectedDaysInfo(monthData.value, selectStartDate.value, selectEndDate.value)
   console.log(selectedDaysInfo.value)
 }
+/**
+ * Event handler for previous month icon
+ */
 function prevMonth(){
   console.log('prevMonth()')
   baseDate.value = baseDate.value.subtract(1, 'month')
   updateMonthData()
 }
+/**
+ * Event handler for next month icon
+ */
 function nextMonth(){
   console.log('nextMonth()')
   baseDate.value = baseDate.value.add(1, 'month')
   updateMonthData()
 }
+/**
+ * Event handler for show one month button
+ */
 function showOneMonth(){
   console.log('showOneMonth()')
   isTwoMonthMode.value = false
 }
+/**
+ * Event handler for show tow months button
+ */
 function showTwoMonths(){
   console.log('showTwoMonths()')
   isTwoMonthMode.value = true
@@ -194,9 +209,15 @@ function cellClick(year, month, date){
   }
   updateMonthData()
 }
+/**
+ * Event Handler for close button of selected days info area
+ */
 function closeButtonClick(){
   isShowSelectedDaysInfo.value = false
 }
+/**
+ * Event Handler for copy button of selected days info area
+ */
 function copyButtonClick(){
   navigator.clipboard.writeText(selectedDaysInfo.value.label)
 }
@@ -215,7 +236,7 @@ function copyButtonClick(){
               <span class="flex justify-center">
                 <div>{{ selectedDaysInfo.label }}</div>
                 <span class="tooltip ml-1 pt-1 flex justify-center">
-                  <!-- <span class="tooltip-contents-copied">Copied</span> -->
+                  <span class="tooltip-contents-copied">Copied</span>
                   <svg @click="copyButtonClick"
                     class="w-4 h-4 inline cursor-pointer js-clipboard-default flex-shrink-0 size-4 hover:stroke-indigo-500"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

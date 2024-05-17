@@ -1,4 +1,4 @@
-import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from '../../../../calendar/lib/calendarState'
+import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from '../../../../calendar/lib/selectState'
 import { describe, expect, it } from 'vitest'
 
 describe('SelectState', ()=> {

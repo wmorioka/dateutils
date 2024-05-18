@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
 import { saveHolidays, getHolidays } from '../lib/storage'
+import { holidaysPresets } from './lib/holidaysPresets'
 
 const isTwoMonthMode = ref(false)
 const baseDate = ref()
@@ -105,50 +106,17 @@ function saveHolidaysData(){
     }, 1000);
   }
 }
-function addPreset2024US(){
-  if (holidaysCSVText.value !== '') {
+/**
+ * Event handler for holidays preset links. Add preset CSV text to textarea
+ * @param {string} key - key of holidaysPresets object
+ */
+function addPreset(key){
+  if (holidaysCSVText.value !== '' && holidaysCSVText.value !== null) {
     holidaysCSVText.value += "\n"
   }
-  holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,New Year's Day
-2024/01/15,Martin Luther King Jr. Day
-2024/02/19,Presidents' Day
-2024/05/27,Memorial Day
-2024/06/19,Juneteenth
-2024/07/04,Independence Day
-2024/09/02,Labor Day
-2024/10/14,Columbus Day
-2024/11/11,Veterans Day
-2024/11/28,Thanksgiving Day
-2024/12/25,Christmas Day`
-
+  holidaysCSVText.value = holidaysCSVText.value + holidaysPresets[key]
 }
-function addPreset2024JP(){
-  if (holidaysCSVText.value !== ''){
-    holidaysCSVText.value += "\n"
-  }
-  holidaysCSVText.value = holidaysCSVText.value + `2024/01/01,元日
-2024/01/08,成人の日
-2024/02/11,建国記念の日
-2024/02/12,休日
-2024/02/23,天皇誕生日
-2024/03/20,春分の日
-2024/04/29,昭和の日
-2024/05/03,憲法記念日
-2024/05/04,みどりの日
-2024/05/05,こどもの日
-2024/05/06,休日
-2024/07/15,海の日
-2024/08/11,山の日
-2024/08/12,休日
-2024/09/16,敬老の日
-2024/09/22,秋分の日
-2024/09/23,休日
-2024/10/14,スポーツの日
-2024/11/03,文化の日
-2024/11/04,休日
-2024/11/23,勤労感謝の日`
 
-}
 /**
  * Event Handler for calendar cell click event
  * @param year 
@@ -286,11 +254,9 @@ function copyButtonClick(){
           <div id="calendar-container" class="grid grid-cols-1 gap-4 md:gap-6"
             :class="{ 'md:grid-cols-2': isTwoMonthMode }">
             <!-- First month -->
-            <CalendarBody :monthData="monthData[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false"
-              @cell-click="cellClick" />
+            <CalendarBody :monthData="monthData[0]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="false" @cell-click="cellClick" />
             <!-- second month -->
-            <CalendarBody :monthData="monthData[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true"
-              @cell-click="cellClick" />
+            <CalendarBody :monthData="monthData[1]" :isTwoMonthMode="isTwoMonthMode" :isSecondMonth="true" @cell-click="cellClick" />
           </div>
         </div>
       </div>
@@ -315,6 +281,9 @@ function copyButtonClick(){
         </svg>
       </div>
       <div id="settings-container" class="py-6" :class="{ hidden: !isSettingOpened }">
+        <div class=" mb-2">
+            You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle. Acceptable CSV format is <span class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
+        </div>
         <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
           <div class="sm:col-span-3">
             <label for="holidays-data" class="inline-block  mt-2.5 ">
@@ -327,13 +296,12 @@ function copyButtonClick(){
             <div class="sm:flex">
               <textarea v-model="holidaysCSVText"
                 class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                :class="{error: hasHolidaysCSVTextError}"
-                id="holidays-data" placeholder="YYYY/MM/DD,Holiday Name" name="holidays-data" rows="7"
-                cols="40"></textarea>
+                :class="{error: hasHolidaysCSVTextError}" id="holidays-data" placeholder="YYYY/MM/DD,Holiday Name"
+                name="holidays-data" rows="7" cols="40"></textarea>
             </div>
             <template v-for="error in holidaysCSVTextErrors">
               <div class="text-red-500">
-                  {{ error }}
+                {{ error }}
               </div>
             </template>
           </div>
@@ -348,14 +316,13 @@ function copyButtonClick(){
           </div>
         </div>
         <div class=" mb-2">
-          We offer some preset holidays data. Click below links to add holidays data and then save the data.
+          We offer some holidays presets. Click below links to add holidays data and then save the data.
         </div>
         <div class=" mb-2">
-          <button @click="addPreset2024US" id="preset-holidays-2024-us" class="text-indigo-500 block mb-2">2024 US
-            Holidays</button>
-          <button @click="addPreset2024JP" id="preset-holidays-2024-jp" class="text-indigo-500 block mb-2">2024 Japan
-            Holidays</button>
-
+          <button @click="addPreset('2024-US')" class="text-indigo-500 block mb-2">2024 US Holidays</button>
+          <button @click="addPreset('2025-US')" class="text-indigo-500 block mb-2">2025 US Holidays</button>
+          <button @click="addPreset('2024-JP')" class="text-indigo-500 block mb-2">2024 Japan Holidays</button>
+          <button @click="addPreset('2025-JP')" class="text-indigo-500 block mb-2">2025 Japan Holidays</button>
         </div>
         <div class=" mb-2">
           Holidays data is stored in your browser's local storage. Your data is not sent to the server.

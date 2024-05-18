@@ -26,8 +26,8 @@ import dayjs from 'dayjs'
 export function createMonthData(date, holiday, selectStartDate = null, selectEndDate = null) {
     let tmpDate = date
     let result = []
-    console.log(`selectStartDate is ${selectStartDate}`)
-    console.log(`selectEndDate is ${selectEndDate}`)
+    // console.log(`selectStartDate is ${selectStartDate}`)
+    // console.log(`selectEndDate is ${selectEndDate}`)
     const today = dayjs(dayjs().format('YYYY-MM-DD'))
 
     for (let i = 0; i < 2; i++) {
@@ -129,5 +129,69 @@ export function createSelectedDaysInfo(monthData, selectStartDate, selectEndDate
         nonBusinessDays += weekends.length
     }
     obj.businessDays = obj.duration - nonBusinessDays
+    return obj
+}
+/**
+ * Validate Holidays CSV
+ * @param {string} data - CSV text data
+ * @returns {object} 
+ * {
+ *   hasError; true if CSV is invalid
+ *   errorMessages: array of error messages
+ * }
+ */
+export function validateHolidaysCSV(data){
+    let result = {hasError: false, errorMessages: []}
+    if (data === ''){
+        return result
+    }
+    const pattern = /\d{4}\/\d{1,2}\/\d{1,2},.*/
+    data.split("\n").forEach(row => {
+        if (!pattern.test(row)){
+            result.hasError = true
+            result.errorMessages.push(`"${row}" is wrong format.`)
+        }
+    })
+    return result
+}
+/**
+ * Convert holidays CSV to Object.
+ * @param {string} text - CSV text. Expected format is 'YYYY/MM/DD,name'
+ * @returns {Object} Holidays object
+ * {
+ *   2024:{ // year
+ *     1:{  // month
+ *       1: 'New year holiday',
+ *       2; 'some holiday name'
+ *     }
+ *   }
+ * }
+ */
+export function convertHolidaysCSV(text){
+    let obj = {}
+    if (text === ''){
+        return obj
+    }
+    const pattern = /(\d{4})\/(\d{1,2})\/(\d{1,2}),(.*)/
+    text.split("\n").forEach(row => {
+        const match = row.match(pattern)
+        if (match === null){
+            console.log(`Holidays CSV format does not match: ${row}`)
+        } else {
+            let day = {}
+            day[Number(match[3])] = match[4]
+            let month = {}
+            month[Number(match[2])] = day
+            if (obj[Number(match[1])] === undefined){
+                obj[Number(match[1])] = month
+            } else if (obj[Number(match[1])][Number(match[2])] === undefined) {
+                obj[Number(match[1])][Number(match[2])] = day
+            } else {
+                obj[Number(match[1])][Number(match[2])][Number(match[3])] = match[4]
+            }
+        }
+    })
+    console.log('Holidays Object is ...')
+    console.log(obj)
     return obj
 }

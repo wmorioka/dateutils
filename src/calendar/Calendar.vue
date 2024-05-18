@@ -2,12 +2,14 @@
 import CalendarBody from './parts/CalendarBody.vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-import { createMonthData, createSelectedDaysInfo } from './lib/calendarFunctions'
+import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
+import { saveHolidays, getHolidays } from '../lib/storage'
 
 const isTwoMonthMode = ref(false)
 const baseDate = ref()
 const holidaysData = ref()
+const holidaysCSVText = ref('')
 const monthData = ref([])
 const state = ref(new SelectState())
 const selectStartDate = ref(null)
@@ -16,6 +18,9 @@ const selectedDaysInfo = ref()
 const isShowSelectedDaysInfo = ref(false)
 const isShowCopyTooltip = ref(false)
 const copyToolipTimer = ref()
+// For Save holidays data
+const isShowSaveTooltip = ref(false)
+const saveToolipTimer = ref()
 
 init()
 
@@ -25,58 +30,12 @@ init()
 function init(){
   // This is to emit hour, minute, second and milisecond
   baseDate.value = dayjs(dayjs().format('YYYY-MM-DD'))
-  holidaysData.value = {
-    2024: {
-      1: {
-        1: '元旦',
-        8: '成人の日'
-      },
-      2: {
-        11: '建国記念の日',
-        12: '休日',
-        23: '天皇誕生日'
-      },
-      3: {
-        20: '春分の日'
-      },
-      4: {
-        29: '昭和の日'
-      },
-      5: {
-        3: '憲法記念日',
-        4: 'みどりの日',
-        5: 'こどもの日',
-        6: '振替休日'
-      },
-      7: {
-        15: '海の日'
-      },
-      8: {
-        11: '山の日',
-        12: '振替休日'
-      },
-      9: {
-        16: '敬老の日',
-        22: '秋分の日',
-        23: '振替休日'
-      },
-      10: {
-        14: 'スポーツの日'
-      },
-      11: {
-        3: '文化の日',
-        4: '休日'
-      },
-      11: {
-        23: '勤労感謝の日'
-      },
-      12: {
-        30: '年末',
-        31: '大晦日'
-      }
-    }
-  }
+  updateHolidaysData()
   updateMonthData()
+}
+function updateHolidaysData(){
+  holidaysCSVText.value = getHolidays()
+  holidaysData.value = convertHolidaysCSV(holidaysCSVText.value)
 }
 /**
  * Update months data. This data is used for calendar
@@ -118,13 +77,27 @@ function showTwoMonths(){
 }
 
 const isSettingOpened = ref(false)
-const holidaysCSVText = ref('')
 function toggleSettings(){
   isSettingOpened.value = !isSettingOpened.value
 }
+/**
+ * Event handler for save holidays button
+ */
+function saveHolidaysData(){
+  clearTimeout(saveToolipTimer.value)
+  isShowSaveTooltip.value = false
+  const result = validateHolidaysCSV(holidaysCSVText.value)
+  if (result.hasError){
 
-function saveHistoryData(){
-
+  } else {
+    saveHolidays(holidaysCSVText.value)
+    updateHolidaysData()
+    updateMonthData()
+    isShowSaveTooltip.value = true
+    saveToolipTimer.value = setTimeout(() => {
+      isShowSaveTooltip.value = false
+    }, 1000);
+  }
 }
 function addPreset2024US(){
   if (holidaysCSVText.value !== '') {
@@ -355,11 +328,11 @@ function copyButtonClick(){
         </div>
         <div class="mb-6 mt-6 w-full text-center">
           <div class="flex justify-center tooltip">
-            <button type="button" @click="saveHistoryData"
+            <button type="button" @click="saveHolidaysData"
               class="py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-40 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
               Save
             </button>
-            <span class="tooltip-contents-copied">Saved</span>
+            <span class="tooltip-contents-copied" :class="{ hidden: !isShowSaveTooltip }">Saved</span>
           </div>
         </div>
         <div class=" mb-2">

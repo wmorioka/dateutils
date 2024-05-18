@@ -295,7 +295,7 @@ function copyButtonClick(){
             <div class="sm:flex">
               <textarea v-model="holidaysCSVText"
                 class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                :class="{error: hasHolidaysCSVTextError}" id="holidays-data" placeholder="YYYY/MM/DD,Holiday Name"
+                :class="{error: hasHolidaysCSVTextError}" id="holidays-data" placeholder="YYYY/MM/DD,Holiday name"
                 name="holidays-data" rows="7" cols="40"></textarea>
             </div>
             <template v-for="error in holidaysCSVTextErrors">

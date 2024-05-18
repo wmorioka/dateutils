@@ -10,6 +10,8 @@ const isTwoMonthMode = ref(false)
 const baseDate = ref()
 const holidaysData = ref()
 const holidaysCSVText = ref('')
+const hasHolidaysCSVTextError = ref(false)
+const holidaysCSVTextErrors = ref([])
 const monthData = ref([])
 const state = ref(new SelectState())
 const selectStartDate = ref(null)
@@ -88,8 +90,12 @@ function saveHolidaysData(){
   isShowSaveTooltip.value = false
   const result = validateHolidaysCSV(holidaysCSVText.value)
   if (result.hasError){
-
+    holidaysCSVTextErrors.value = result.errorMessages
+    hasHolidaysCSVTextError.value = true
   } else {
+    holidaysCSVTextErrors.value = []
+    hasHolidaysCSVTextError.value = false
+
     saveHolidays(holidaysCSVText.value)
     updateHolidaysData()
     updateMonthData()
@@ -321,9 +327,15 @@ function copyButtonClick(){
             <div class="sm:flex">
               <textarea v-model="holidaysCSVText"
                 class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                :class="{error: hasHolidaysCSVTextError}"
                 id="holidays-data" placeholder="YYYY-MM-DD,Holiday Name" name="holidays-data" rows="7"
                 cols="40"></textarea>
             </div>
+            <template v-for="error in holidaysCSVTextErrors">
+              <div class="text-red-500">
+                  {{ error }}
+              </div>
+            </template>
           </div>
         </div>
         <div class="mb-6 mt-6 w-full text-center">

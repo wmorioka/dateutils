@@ -11,5 +11,11 @@ describe('Holidays functions', () => {
         localStorage.setItem('/v1/holidays-data', testData)
         expect(getHolidays()).toBe(testData)
     })
-
+    describe('no data exists in localStorage', () => {
+        it('getHolidays return empty string not null', () => {
+            localStorage.clear()
+            const expected = ''
+            expect(getHolidays()).toBe(expected)
+        })
+    })
 })

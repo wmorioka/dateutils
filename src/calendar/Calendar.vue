@@ -280,7 +280,7 @@ function copyButtonClick(){
             d="M18,15.5a1,1,0,0,1-.71-.29l-4.58-4.59a1,1,0,0,0-1.42,0L6.71,15.21a1,1,0,0,1-1.42-1.42L9.88,9.21a3.06,3.06,0,0,1,4.24,0l4.59,4.58a1,1,0,0,1,0,1.42A1,1,0,0,1,18,15.5Z" />
         </svg>
       </div>
-      <div id="settings-container" class="py-6" :class="{ hidden: !isSettingOpened }">
+      <div id="settings-container" class="py-2" :class="{ hidden: !isSettingOpened }">
         <div class=" mb-2">
             You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle. Acceptable CSV format is <span class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
         </div>
@@ -290,7 +290,6 @@ function copyButtonClick(){
               Holiday Data
             </label>
           </div>
-          <!-- End Col -->
 
           <div class="sm:col-span-9">
             <div class="sm:flex">

@@ -18,6 +18,8 @@ import dayjs from 'dayjs'
  *        isHoliday: false (bool: true if holiday)
  *        holidayLabel: "Christmas Day" (String: label of holiday)
  *        isToday: false (bool: true if today)
+ *        isSelected: false (bool: true if date is selected)
+ *        selectedClass: {string} selected|selected-start|selected-middle|selected-end
  *      },
  *    ],
  *  },

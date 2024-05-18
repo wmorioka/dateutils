@@ -169,7 +169,7 @@ export function validateHolidaysCSV(data){
  */
 export function convertHolidaysCSV(text){
     let obj = {}
-    if (text === ''){
+    if (text === '' || text === null){
         return obj
     }
     const pattern = /(\d{4})\/(\d{1,2})\/(\d{1,2}),(.*)/

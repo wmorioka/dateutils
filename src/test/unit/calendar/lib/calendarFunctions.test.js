@@ -283,5 +283,10 @@ describe('convertHolidaysCSV', () => {
         const holiday = {}
         expect(convertHolidaysCSV(testData)).toEqual(holiday)
     })
+    it('converts null to empty object', () => {
+        const testData = null
+        const holiday = {}
+        expect(convertHolidaysCSV(testData)).toEqual(holiday)
+    })
 
 })

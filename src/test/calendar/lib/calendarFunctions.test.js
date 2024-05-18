@@ -1,4 +1,4 @@
-import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from '../../../../calendar/lib/calendarFunctions'
+import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from '../../../calendar/lib/calendarFunctions'
 import dayjs from 'dayjs'
 import { describe, expect, it, vi } from 'vitest'
 

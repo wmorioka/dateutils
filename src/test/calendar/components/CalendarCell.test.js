@@ -7,6 +7,23 @@ describe('CalendarCell', () => {
     it("can be mounted", async () => {
         expect(CalendarCell).toBeTruthy()
     })
+    it('date is displayed', async () => {
+        const date = {
+            day: 1,
+            dayOfWeek: 0,
+            isHoliday: false,
+            holidayLabel: '',
+            isToday: true,
+            isSelected: false,
+            selectedClass: ''
+        }
+        const wrapper = mount(CalendarCell, {
+            props: {
+                date: date,
+            },
+        })
+        expect(wrapper.get('span.day').text()).toBe('1')
+    })
     describe("Today's mark", () => {
         it('exists if date is today', async () => {
             const date = {

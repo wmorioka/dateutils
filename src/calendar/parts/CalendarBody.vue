@@ -4,7 +4,7 @@ import CalendarEmptyCell from './CalendarEmptyCell.vue'
 
 const props = defineProps([
     'monthData',
-    'isTwoMonthMode',
+    'isTwoMonthsModeEnabled',
     'isSecondMonth'
 ])
 const emit = defineEmits(['cellClick'])
@@ -15,7 +15,7 @@ function cellClick(date) {
 </script>
 
 <template>
-    <div :class="{ 'hidden': isSecondMonth && !isTwoMonthMode }">
+    <div :class="{ 'hidden': isSecondMonth && !isTwoMonthsModeEnabled }">
         <!-- header -->
         <div class="flex mb-5 pt-1">
             <span class="text-xl md:text-2xl select-none">{{ monthData.label }}</span>

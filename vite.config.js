@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         index: resolve(root, 'index.html'),
         calendar: resolve(root, 'calendar.html'),
+        notfound: resolve(root, '404.html'),
       },
     },
   },

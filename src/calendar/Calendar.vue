@@ -114,7 +114,7 @@ function addPreset(key){
  * @param month 
  * @param date 
  */
-function cellClick(year, month, date){
+function onCellClick(year, month, date){
   console.log(`cell clicked: ${year}-${month}-${date}`)
   console.log(`selectState: ${state.value.currentState}`)
   isSelectedRangeBannerVisible.value = false
@@ -150,15 +150,15 @@ function cellClick(year, month, date){
   updateMonthData()
 }
 /**
- * Event Handler for close button of selected days info area
+ * Event Handler for close button of selected range banner
  */
-function closeButtonClick(){
+function closeSelectedRangeBanner(){
   isSelectedRangeBannerVisible.value = false
 }
 /**
- * Event Handler for copy button of selected days info area
+ * Event Handler for copy button of selected range banner
  */
-function copyButtonClick(){
+function copyRangeText(){
   clearTimeout(copyToolipTimer.value)
   navigator.clipboard.writeText(selectedRangeInfo.value.label)
   isCopyTooltipVisible.value = true
@@ -182,8 +182,8 @@ function copyButtonClick(){
             :label="selectedRangeInfo.label"
             :days="selectedRangeInfo.days"
             :businessDays="selectedRangeInfo.businessDays"
-            @close="closeButtonClick"
-            @copy="copyButtonClick"
+            @close="closeSelectedRangeBanner"
+            @copy="copyRangeText"
           />
           <!-- Control -->
           <CalendarControls :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled" @move="move"
@@ -194,10 +194,10 @@ function copyButtonClick(){
             :class="{ 'md:grid-cols-2': isTwoMonthsModeEnabled }">
             <!-- First month -->
             <CalendarBody :monthData="monthData[0]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
-              :isSecondMonth="false" @cell-click="cellClick" />
+              :isSecondMonth="false" @cell-click="onCellClick" />
             <!-- second month -->
             <CalendarBody :monthData="monthData[1]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
-              :isSecondMonth="true" @cell-click="cellClick" />
+              :isSecondMonth="true" @cell-click="onCellClick" />
           </div>
         </div>
       </div>

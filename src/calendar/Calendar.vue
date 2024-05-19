@@ -1,9 +1,9 @@
 <script setup>
+import { ref } from 'vue'
+import dayjs from 'dayjs'
 import CalendarBody from './parts/CalendarBody.vue'
 import CalendarControls from './parts/CalendarControls.vue'
 import SelectedRangeBanner from './parts/SelectedRangeBanner.vue'
-import { ref } from 'vue'
-import dayjs from 'dayjs'
 import { createMonthData, createSelectedRangeInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
 import { saveHolidays, getHolidays } from '../lib/storage'

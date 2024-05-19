@@ -107,18 +107,18 @@ export function createMonthData(date, holiday, selectStartDate = null, selectEnd
  * @return {object} Selected days info
  * {
  *   label: '2024/05/01 - 2024/05/09',
- *   duration: 9,
+ *   days: 9,
  *   businessDays: 5
  * }
  */
-export function createSelectedDaysInfo(monthData, selectStartDate, selectEndDate){
+export function createSelectedRangeInfo(monthData, selectStartDate, selectEndDate){
     const format = 'YYYY/MM/DD'
-    let obj = { label: '', duration: 0, businessDays: 0 }
+    let obj = { label: '', days: 0, businessDays: 0 }
     if (selectStartDate === null || selectEndDate === null){
         return obj
     }
     obj.label = `${selectStartDate.format(format)} - ${selectEndDate.format(format) }`
-    obj.duration = selectEndDate.diff(selectStartDate, 'day') + 1
+    obj.days = selectEndDate.diff(selectStartDate, 'day') + 1
     let nonBusinessDays = 0
     for (let i = 0; i < 2; i++) {
         const holidays = monthData[i].days.filter(date => {
@@ -130,7 +130,7 @@ export function createSelectedDaysInfo(monthData, selectStartDate, selectEndDate
         })
         nonBusinessDays += weekends.length
     }
-    obj.businessDays = obj.duration - nonBusinessDays
+    obj.businessDays = obj.days - nonBusinessDays
     return obj
 }
 /**

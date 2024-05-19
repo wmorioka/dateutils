@@ -1,4 +1,4 @@
-import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from '../../../calendar/lib/calendarFunctions'
+import { createMonthData, createSelectedRangeInfo, validateHolidaysCSV, convertHolidaysCSV } from '../../../calendar/lib/calendarFunctions'
 import dayjs from 'dayjs'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -119,7 +119,7 @@ describe('createMonthData', ()=> {
     })
 })
 
-describe('createSelectedDaysInfo', () => {
+describe('createSelectedRangeInfo', () => {
     it('has label', () => {
         const date = dayjs(TEST_DATE)
         const startDateLabel = '2024-01-01'
@@ -129,10 +129,10 @@ describe('createSelectedDaysInfo', () => {
         const format = 'YYYY/MM/DD'
         const expected = `${selectedStart.format(format)} - ${selectedEnd.format(format) }`
         const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
-        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
-        expect(selectedDaysInfo.label).toBe(expected)
+        const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedRangeInfo.label).toBe(expected)
     })
-    it('has duration', () => {
+    it('has days', () => {
         const date = dayjs(TEST_DATE)
         const startDateLabel = '2024-01-01'
         const endDateLabel = '2024-01-15'
@@ -140,8 +140,8 @@ describe('createSelectedDaysInfo', () => {
         const selectedEnd = dayjs(endDateLabel)
         const expected = 15
         const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
-        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
-        expect(selectedDaysInfo.duration).toBe(expected)
+        const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedRangeInfo.days).toBe(expected)
     })
     it('has businessDays', () => {
         const date = dayjs(TEST_DATE)
@@ -151,8 +151,8 @@ describe('createSelectedDaysInfo', () => {
         const selectedEnd = dayjs(endDateLabel)
         const expected = 11
         const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
-        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
-        expect(selectedDaysInfo.businessDays).toBe(expected)
+        const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedRangeInfo.businessDays).toBe(expected)
     })
     it('businessDays excludes holidays', () => {
         const holiday = { 
@@ -172,8 +172,8 @@ describe('createSelectedDaysInfo', () => {
         const selectedEnd = dayjs(endDateLabel)
         const expected = 7
         const monthData = createMonthData(date, holiday, selectedStart, selectedEnd)
-        const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
-        expect(selectedDaysInfo.businessDays).toBe(expected)
+        const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, selectedEnd)
+        expect(selectedRangeInfo.businessDays).toBe(expected)
     })
     describe('selected range overwrap to next month', () => {
         it('has businessDays', () => {
@@ -184,8 +184,8 @@ describe('createSelectedDaysInfo', () => {
             const selectedEnd = dayjs(endDateLabel)
             const expected = 5
             const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
-            const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, selectedEnd)
-            expect(selectedDaysInfo.businessDays).toBe(expected)
+            const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, selectedEnd)
+            expect(selectedRangeInfo.businessDays).toBe(expected)
         })
     })
     describe('selectStartDate or selectEndDate is null', () => {
@@ -195,10 +195,10 @@ describe('createSelectedDaysInfo', () => {
             const endDateLabel = '2024-02-03'
             const selectedStart = dayjs(startDateLabel)
             const selectedEnd = dayjs(endDateLabel)
-            const expected = { label: '', duration: 0, businessDays: 0 }
+            const expected = { label: '', days: 0, businessDays: 0 }
             const monthData = createMonthData(date, {}, selectedStart, selectedEnd)
-            const selectedDaysInfo = createSelectedDaysInfo(monthData, selectedStart, null)
-            expect(selectedDaysInfo).toEqual(expected)
+            const selectedRangeInfo = createSelectedRangeInfo(monthData, selectedStart, null)
+            expect(selectedRangeInfo).toEqual(expected)
         })
     })
 })

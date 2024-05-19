@@ -1,9 +1,10 @@
 <script setup>
 import CalendarBody from './parts/CalendarBody.vue'
 import CalendarControls from './parts/CalendarControls.vue'
+import SelectedRangeBanner from './parts/SelectedRangeBanner.vue'
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-import { createMonthData, createSelectedDaysInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
+import { createMonthData, createSelectedRangeInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
 import { saveHolidays, getHolidays } from '../lib/storage'
 import { holidaysPresets } from './lib/holidaysPresets'
@@ -18,8 +19,8 @@ const monthData = ref([])
 const state = ref(new SelectState())
 const selectStartDate = ref(null)
 const selectEndDate = ref(null)
-const selectedDaysInfo = ref()
-const isSelectedDaysInfoVisible = ref(false)
+const selectedRangeInfo = ref()
+const isSelectedRangeBannerVisible = ref(false)
 const isCopyTooltipVisible = ref(false)
 const copyToolipTimer = ref()
 // For Save holidays data
@@ -46,8 +47,8 @@ function updateHolidaysData(){
  */
 function updateMonthData(){
   monthData.value = createMonthData(baseDate.value, holidaysData.value, selectStartDate.value, selectEndDate.value)
-  selectedDaysInfo.value = createSelectedDaysInfo(monthData.value, selectStartDate.value, selectEndDate.value)
-  console.log(selectedDaysInfo.value)
+  selectedRangeInfo.value = createSelectedRangeInfo(monthData.value, selectStartDate.value, selectEndDate.value)
+  console.log(selectedRangeInfo.value)
 }
 /**
  * Handle click event of Show prev and Show next.
@@ -116,7 +117,7 @@ function addPreset(key){
 function cellClick(year, month, date){
   console.log(`cell clicked: ${year}-${month}-${date}`)
   console.log(`selectState: ${state.value.currentState}`)
-  isSelectedDaysInfoVisible.value = false
+  isSelectedRangeBannerVisible.value = false
   const selectedDate = dayjs(new Date(year, month - 1, date))
   if (state.value.currentState === SELECT_NONE){
     // No date selected yet
@@ -127,7 +128,7 @@ function cellClick(year, month, date){
       selectStartDate.value = null
       state.value.reset()
     } else {
-      isSelectedDaysInfoVisible.value = true
+      isSelectedRangeBannerVisible.value = true
       // selectStartDate < selectedDate
       if (selectStartDate.value.isBefore(selectedDate)) {
         selectEndDate.value = selectedDate
@@ -152,14 +153,14 @@ function cellClick(year, month, date){
  * Event Handler for close button of selected days info area
  */
 function closeButtonClick(){
-  isSelectedDaysInfoVisible.value = false
+  isSelectedRangeBannerVisible.value = false
 }
 /**
  * Event Handler for copy button of selected days info area
  */
 function copyButtonClick(){
   clearTimeout(copyToolipTimer.value)
-  navigator.clipboard.writeText(selectedDaysInfo.value.label)
+  navigator.clipboard.writeText(selectedRangeInfo.value.label)
   isCopyTooltipVisible.value = true
   copyToolipTimer.value = setTimeout(() => {
     isCopyTooltipVisible.value = false
@@ -174,43 +175,29 @@ function copyButtonClick(){
       <!-- Calendar container -->
       <div class="w-full">
         <div class="relative">
-          <!-- Selected Days Info -->
-          <div class="selected-days-info" :class="{ 'hidden': !isSelectedDaysInfoVisible }">
-            <div class="p-3 px-10 text-center relative">
-              <span class="flex justify-center">
-                <div>{{ selectedDaysInfo.label }}</div>
-                <span class="tooltip ml-1 pt-1 flex justify-center">
-                  <span class="tooltip-contents-copied" :class="{ 'hidden': !isCopyTooltipVisible }">Copied</span>
-                  <svg @click="copyButtonClick"
-                    class="w-4 h-4 inline cursor-pointer js-clipboard-default flex-shrink-0 size-4 hover:stroke-indigo-500"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                  </svg>
-                </span>
-              </span>
-              <span class="block">{{ selectedDaysInfo.duration }} days ({{ selectedDaysInfo.businessDays }} business
-                days)</span>
-              <!-- close button -->
-              <button class="absolute right-1 top-1" @click="closeButtonClick">
-                <svg class="w-6 h-6 inline cursor-pointer flex-shrink-0 size-4" viewBox="0 0 24 24">
-                  <path
-                    d="M18,6h0a1,1,0,0,0-1.414,0L12,10.586,7.414,6A1,1,0,0,0,6,6H6A1,1,0,0,0,6,7.414L10.586,12,6,16.586A1,1,0,0,0,6,18H6a1,1,0,0,0,1.414,0L12,13.414,16.586,18A1,1,0,0,0,18,18h0a1,1,0,0,0,0-1.414L13.414,12,18,7.414A1,1,0,0,0,18,6Z" />
-                </svg>
-              </button>
-            </div>
-          </div>
+          <!-- Selected Range Banner -->
+          <SelectedRangeBanner 
+            :isSelectedRangeBannerVisible="isSelectedRangeBannerVisible" 
+            :isCopyTooltipVisible="isCopyTooltipVisible"
+            :label="selectedRangeInfo.label"
+            :days="selectedRangeInfo.days"
+            :businessDays="selectedRangeInfo.businessDays"
+            @close="closeButtonClick"
+            @copy="copyButtonClick"
+          />
           <!-- Control -->
-          <CalendarControls :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled" @move="move" @toggle-mode="toggleTwoMonthsMode"/>
-          
+          <CalendarControls :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled" @move="move"
+            @toggle-mode="toggleTwoMonthsMode" />
+
           <!-- Add 'md:grid-cols-2' if 2 months mode -->
           <div id="calendar-container" class="grid grid-cols-1 gap-4 md:gap-6"
             :class="{ 'md:grid-cols-2': isTwoMonthsModeEnabled }">
             <!-- First month -->
-            <CalendarBody :monthData="monthData[0]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled" :isSecondMonth="false" @cell-click="cellClick" />
+            <CalendarBody :monthData="monthData[0]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
+              :isSecondMonth="false" @cell-click="cellClick" />
             <!-- second month -->
-            <CalendarBody :monthData="monthData[1]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled" :isSecondMonth="true" @cell-click="cellClick" />
+            <CalendarBody :monthData="monthData[1]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
+              :isSecondMonth="true" @cell-click="cellClick" />
           </div>
         </div>
       </div>
@@ -236,7 +223,9 @@ function copyButtonClick(){
       </div>
       <div id="settings-container" class="py-2" :class="{ hidden: !isSettingsOpened }">
         <div class=" mb-2">
-            You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle. Acceptable CSV format is <span class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
+          You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle.
+          Acceptable CSV format is <span
+            class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
         </div>
         <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
           <div class="sm:col-span-3">

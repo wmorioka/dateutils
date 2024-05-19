@@ -69,9 +69,9 @@ function toggleTwoMonthsMode(twoMonthsMode){
   isTwoMonthsModeEnabled.value = twoMonthsMode
 }
 
-const isSettingOpened = ref(false)
+const isSettingsOpened = ref(false)
 function toggleSettings(){
-  isSettingOpened.value = !isSettingOpened.value
+  isSettingsOpened.value = !isSettingsOpened.value
 }
 /**
  * Event handler for save holidays button
@@ -222,19 +222,19 @@ function copyButtonClick(){
     <!-- Setting -->
     <div class="lg:w-4/5 mb-10 mx-auto">
       <div id="toggle-settings" class="cursor-pointer inline-block" @click="toggleSettings">
-        <span class="text-indigo-500">Settings</span><svg id="settings-arrow-down" :class="{ hidden: isSettingOpened }"
+        <span class="text-indigo-500">Settings</span><svg id="settings-arrow-down" :class="{ hidden: isSettingsOpened }"
           class="inline-block fill-indigo-400 w-6 h-6" viewBox="0 0 24 24" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <path
             d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z" />
-        </svg><svg id="settings-arrow-up" :class="{ hidden: !isSettingOpened }"
+        </svg><svg id="settings-arrow-up" :class="{ hidden: !isSettingsOpened }"
           class="inline-block fill-indigo-400 w-6 h-6" viewBox="0 0 24 24" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <path
             d="M18,15.5a1,1,0,0,1-.71-.29l-4.58-4.59a1,1,0,0,0-1.42,0L6.71,15.21a1,1,0,0,1-1.42-1.42L9.88,9.21a3.06,3.06,0,0,1,4.24,0l4.59,4.58a1,1,0,0,1,0,1.42A1,1,0,0,1,18,15.5Z" />
         </svg>
       </div>
-      <div id="settings-container" class="py-2" :class="{ hidden: !isSettingOpened }">
+      <div id="settings-container" class="py-2" :class="{ hidden: !isSettingsOpened }">
         <div class=" mb-2">
             You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle. Acceptable CSV format is <span class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
         </div>

@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import CalendarBody from './parts/CalendarBody.vue'
 import CalendarControls from './parts/CalendarControls.vue'
 import SelectedRangeBanner from './parts/SelectedRangeBanner.vue'
+import CalendarSettings from './parts/CalendarSettings.vue'
 import { createMonthData, createSelectedRangeInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
 import { saveHolidays, getHolidays } from '../lib/storage'
@@ -24,7 +25,7 @@ const isSelectedRangeBannerVisible = ref(false)
 const isCopyTooltipVisible = ref(false)
 const copyToolipTimer = ref()
 // For Save holidays data
-const isShowSaveTooltip = ref(false)
+const isSaveTooltipVisible = ref(false)
 const saveToolipTimer = ref()
 
 init()
@@ -33,7 +34,7 @@ init()
  * Initialize base date and holidays data
  */
 function init(){
-  // This is to emit hour, minute, second and milisecond
+  // This is to eliminate hour, minute, second and milisecond
   baseDate.value = dayjs(dayjs().format('YYYY-MM-DD'))
   updateHolidaysData()
   updateMonthData()
@@ -69,17 +70,12 @@ function move(direction) {
 function toggleTwoMonthsMode(twoMonthsMode){
   isTwoMonthsModeEnabled.value = twoMonthsMode
 }
-
-const isSettingsOpened = ref(false)
-function toggleSettings(){
-  isSettingsOpened.value = !isSettingsOpened.value
-}
 /**
  * Event handler for save holidays button
  */
 function saveHolidaysData(){
   clearTimeout(saveToolipTimer.value)
-  isShowSaveTooltip.value = false
+  isSaveTooltipVisible.value = false
   const result = validateHolidaysCSV(holidaysCSVText.value)
   if (result.hasError){
     holidaysCSVTextErrors.value = result.errorMessages
@@ -91,9 +87,9 @@ function saveHolidaysData(){
     saveHolidays(holidaysCSVText.value)
     updateHolidaysData()
     updateMonthData()
-    isShowSaveTooltip.value = true
+    isSaveTooltipVisible.value = true
     saveToolipTimer.value = setTimeout(() => {
-      isShowSaveTooltip.value = false
+      isSaveTooltipVisible.value = false
     }, 1000);
   }
 }
@@ -110,9 +106,9 @@ function addPreset(key){
 
 /**
  * Event Handler for calendar cell click event
- * @param year 
- * @param month 
- * @param date 
+ * @param {Number} year 
+ * @param {Number} month 
+ * @param {Number} date 
  */
 function onCellClick(year, month, date){
   console.log(`cell clicked: ${year}-${month}-${date}`)
@@ -194,10 +190,10 @@ function copyRangeText(){
             :class="{ 'md:grid-cols-2': isTwoMonthsModeEnabled }">
             <!-- First month -->
             <CalendarBody :monthData="monthData[0]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
-              :isSecondMonth="false" @cell-click="onCellClick" />
-            <!-- second month -->
+              :isSecondMonth="false" @on-cell-click="onCellClick" />
+            <!-- Second month -->
             <CalendarBody :monthData="monthData[1]" :isTwoMonthsModeEnabled="isTwoMonthsModeEnabled"
-              :isSecondMonth="true" @cell-click="onCellClick" />
+              :isSecondMonth="true" @on-cell-click="onCellClick" />
           </div>
         </div>
       </div>
@@ -206,73 +202,14 @@ function copyRangeText(){
     <!-- ad -->
     <!-- <div class="lg:w-4/5 mb-10 mx-auto text-white bg-gray-300 w-full h-28 text-xl content-center text-center">ad</div> -->
 
-    <!-- Setting -->
-    <div class="lg:w-4/5 mb-10 mx-auto">
-      <div id="toggle-settings" class="cursor-pointer inline-block" @click="toggleSettings">
-        <span class="text-indigo-500">Settings</span><svg id="settings-arrow-down" :class="{ hidden: isSettingsOpened }"
-          class="inline-block fill-indigo-400 w-6 h-6" viewBox="0 0 24 24" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z" />
-        </svg><svg id="settings-arrow-up" :class="{ hidden: !isSettingsOpened }"
-          class="inline-block fill-indigo-400 w-6 h-6" viewBox="0 0 24 24" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M18,15.5a1,1,0,0,1-.71-.29l-4.58-4.59a1,1,0,0,0-1.42,0L6.71,15.21a1,1,0,0,1-1.42-1.42L9.88,9.21a3.06,3.06,0,0,1,4.24,0l4.59,4.58a1,1,0,0,1,0,1.42A1,1,0,0,1,18,15.5Z" />
-        </svg>
-      </div>
-      <div id="settings-container" class="py-2" :class="{ hidden: !isSettingsOpened }">
-        <div class=" mb-2">
-          You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red circle.
-          Acceptable CSV format is <span
-            class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
-        </div>
-        <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
-          <div class="sm:col-span-3">
-            <label for="holidays-data" class="inline-block  mt-2.5 ">
-              Holiday Data
-            </label>
-          </div>
-
-          <div class="sm:col-span-9">
-            <div class="sm:flex">
-              <textarea v-model="holidaysCSVText"
-                class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                :class="{error: hasHolidaysCSVTextError}" id="holidays-data" placeholder="YYYY/MM/DD,Holiday name"
-                name="holidays-data" rows="7" cols="40"></textarea>
-            </div>
-            <template v-for="error in holidaysCSVTextErrors">
-              <div class="text-red-500">
-                {{ error }}
-              </div>
-            </template>
-          </div>
-        </div>
-        <div class="mb-6 mt-6 w-full text-center">
-          <div class="flex justify-center tooltip">
-            <button type="button" @click="saveHolidaysData"
-              class="py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-40 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-              Save
-            </button>
-            <span class="tooltip-contents-copied" :class="{ hidden: !isShowSaveTooltip }">Saved</span>
-          </div>
-        </div>
-        <div class=" mb-2">
-          We offer some holidays presets. Click below links to add holidays data and then save the data.
-        </div>
-        <div class=" mb-2">
-          <button @click="addPreset('2024-US')" class="text-indigo-500 block mb-2">2024 US Holidays</button>
-          <button @click="addPreset('2025-US')" class="text-indigo-500 block mb-2">2025 US Holidays</button>
-          <button @click="addPreset('2024-JP')" class="text-indigo-500 block mb-2">2024 Japan Holidays</button>
-          <button @click="addPreset('2025-JP')" class="text-indigo-500 block mb-2">2025 Japan Holidays</button>
-        </div>
-        <div class=" mb-2">
-          Holidays data is stored in your browser's local storage. Your data is not sent to the server.
-        </div>
-      </div>
-    </div>
+    <!-- Settings -->
+    <CalendarSettings 
+      v-model="holidaysCSVText"
+      :isSaveTooltipVisible="isSaveTooltipVisible"
+      :hasError="hasHolidaysCSVTextError"
+      :errors="holidaysCSVTextErrors"
+      @save="saveHolidaysData"
+      @addPreset="addPreset" />
+    
   </div>
 </template>
-
-<style scoped>
-</style>

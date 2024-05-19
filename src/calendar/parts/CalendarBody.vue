@@ -7,10 +7,10 @@ const props = defineProps([
     'isTwoMonthsModeEnabled',
     'isSecondMonth'
 ])
-const emit = defineEmits(['cellClick'])
+const emit = defineEmits(['onCellClick'])
 
-function cellClick(date) {
-    emit('cellClick', props.monthData.year, props.monthData.month, date)
+function onCellClick(date) {
+    emit('onCellClick', props.monthData.year, props.monthData.month, date)
 }
 </script>
 
@@ -35,7 +35,7 @@ function cellClick(date) {
             <!-- days -->
             <div class="grid grid-cols-7 text-base md:text-xl">
                 <CalendarEmptyCell v-for="_ in monthData.days[0].dayOfWeek" />
-                <CalendarCell v-for="date in monthData.days" :date="date" @cell-click="cellClick" />
+                <CalendarCell v-for="date in monthData.days" :date="date" @cell-click="onCellClick" />
             </div>
         </div>
     </div>

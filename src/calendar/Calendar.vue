@@ -19,8 +19,8 @@ const state = ref(new SelectState())
 const selectStartDate = ref(null)
 const selectEndDate = ref(null)
 const selectedDaysInfo = ref()
-const isShowSelectedDaysInfo = ref(false)
-const isShowCopyTooltip = ref(false)
+const isSelectedDaysInfoVisible = ref(false)
+const isCopyTooltipVisible = ref(false)
 const copyToolipTimer = ref()
 // For Save holidays data
 const isShowSaveTooltip = ref(false)
@@ -116,7 +116,7 @@ function addPreset(key){
 function cellClick(year, month, date){
   console.log(`cell clicked: ${year}-${month}-${date}`)
   console.log(`selectState: ${state.value.currentState}`)
-  isShowSelectedDaysInfo.value = false
+  isSelectedDaysInfoVisible.value = false
   const selectedDate = dayjs(new Date(year, month - 1, date))
   if (state.value.currentState === SELECT_NONE){
     // No date selected yet
@@ -127,7 +127,7 @@ function cellClick(year, month, date){
       selectStartDate.value = null
       state.value.reset()
     } else {
-      isShowSelectedDaysInfo.value = true
+      isSelectedDaysInfoVisible.value = true
       // selectStartDate < selectedDate
       if (selectStartDate.value.isBefore(selectedDate)) {
         selectEndDate.value = selectedDate
@@ -152,7 +152,7 @@ function cellClick(year, month, date){
  * Event Handler for close button of selected days info area
  */
 function closeButtonClick(){
-  isShowSelectedDaysInfo.value = false
+  isSelectedDaysInfoVisible.value = false
 }
 /**
  * Event Handler for copy button of selected days info area
@@ -160,9 +160,9 @@ function closeButtonClick(){
 function copyButtonClick(){
   clearTimeout(copyToolipTimer.value)
   navigator.clipboard.writeText(selectedDaysInfo.value.label)
-  isShowCopyTooltip.value = true
+  isCopyTooltipVisible.value = true
   copyToolipTimer.value = setTimeout(() => {
-    isShowCopyTooltip.value = false
+    isCopyTooltipVisible.value = false
   }, 1000);
 }
 </script>
@@ -175,12 +175,12 @@ function copyButtonClick(){
       <div class="w-full">
         <div class="relative">
           <!-- Selected Days Info -->
-          <div class="selected-days-info" :class="{ 'hidden': !isShowSelectedDaysInfo }">
+          <div class="selected-days-info" :class="{ 'hidden': !isSelectedDaysInfoVisible }">
             <div class="p-3 px-10 text-center relative">
               <span class="flex justify-center">
                 <div>{{ selectedDaysInfo.label }}</div>
                 <span class="tooltip ml-1 pt-1 flex justify-center">
-                  <span class="tooltip-contents-copied" :class="{ 'hidden': !isShowCopyTooltip }">Copied</span>
+                  <span class="tooltip-contents-copied" :class="{ 'hidden': !isCopyTooltipVisible }">Copied</span>
                   <svg @click="copyButtonClick"
                     class="w-4 h-4 inline cursor-pointer js-clipboard-default flex-shrink-0 size-4 hover:stroke-indigo-500"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

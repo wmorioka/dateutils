@@ -8,7 +8,8 @@ function toggleSettings() {
 
 defineProps([
     'isSaveTooltipVisible',
-    'errors'
+    'errors',
+    'presets'
 ])
 
 const holidaysCSVText = defineModel()
@@ -33,11 +34,12 @@ defineEmits(['save', 'addPreset'])
             </svg>
         </div>
         <div id="settings-container" class="py-2" :class="{ hidden: !isSettingsOpened }">
-            <div class=" mb-2">
+            <div class=" mb-3">
                 You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red
                 circle.
                 Acceptable CSV format is <span
                     class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
+                Holidays data is stored in your browser's local storage. Your data is not sent to the server.
             </div>
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
                 <div class="sm:col-span-3">
@@ -50,8 +52,8 @@ defineEmits(['save', 'addPreset'])
                     <div class="sm:flex">
                         <textarea v-model="holidaysCSVText"
                             class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            :class="{ error: errors.length > 0 }" id="holidays-data" placeholder="YYYY/MM/DD,Holiday name"
-                            name="holidays-data" rows="7" cols="40"></textarea>
+                            :class="{ error: errors.length > 0 }" id="holidays-data"
+                            placeholder="YYYY/MM/DD,Holiday name" name="holidays-data" rows="7" cols="40"></textarea>
                     </div>
                     <template v-for="error in errors">
                         <div class="text-red-500">
@@ -73,17 +75,13 @@ defineEmits(['save', 'addPreset'])
                 We offer some holidays presets. Click below links to add holidays data and then save the data.
             </div>
             <div class=" mb-2">
-                <button @click="$emit('addPreset', '2024-US')" class="text-indigo-500 block mb-2">2024 US
-                    Holidays</button>
-                <button @click="$emit('addPreset', '2025-US')" class="text-indigo-500 block mb-2">2025 US
-                    Holidays</button>
-                <button @click="$emit('addPreset', '2024-JP')" class="text-indigo-500 block mb-2">2024 Japan
-                    Holidays</button>
-                <button @click="$emit('addPreset', '2025-JP')" class="text-indigo-500 block mb-2">2025 Japan
-                    Holidays</button>
+                <template v-for="(value, key) in presets">
+                    <button @click="$emit('addPreset', key)" class="text-indigo-500 block mb-2">{{ value.label
+                        }}</button>
+                </template>
             </div>
             <div class=" mb-2">
-                Holidays data is stored in your browser's local storage. Your data is not sent to the server.
+                You are <span class="font-bold">super welcome</span> to add a preset by opening a pull request.
             </div>
         </div>
     </div>

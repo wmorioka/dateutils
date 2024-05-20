@@ -1,6 +1,7 @@
 export const holidaysPresets = {
-    // 2024 US Holidays
-    '2024-US': `2024/01/01,New Year's Day
+    '2024-US': {
+        label: '2024 US Holidays',
+        text:`2024/01/01,New Year's Day
 2024/01/15,Martin Luther King Jr. Day
 2024/02/19,Presidents' Day
 2024/05/27,Memorial Day
@@ -10,9 +11,11 @@ export const holidaysPresets = {
 2024/10/14,Columbus Day
 2024/11/11,Veterans Day
 2024/11/28,Thanksgiving Day
-2024/12/25,Christmas Day`,
-    // 2025 US Holidays
-    '2025-US': `2025/01/01,New Year's Day
+2024/12/25,Christmas Day`
+    },
+    '2025-US': {
+        label: '2025 US Holidays',
+        text: `2025/01/01,New Year's Day
 2025/01/20,Martin Luther King Jr. Day
 2025/01/20,Inauguration Day
 2025/02/17,Presidents' Day
@@ -23,9 +26,11 @@ export const holidaysPresets = {
 2025/10/13,Columbus Day
 2025/11/11,Veterans Day
 2025/11/27,Thanksgiving Day
-2025/12/25,Christmas Day`,
-    // 2024 Japan Holidays
-    '2024-JP': `2024/01/01,元日
+2025/12/25,Christmas Day`
+    },
+    '2024-JP': {
+        label: '2024 Japan Holidays',
+        text: `2024/01/01,元日
 2024/01/08,成人の日
 2024/02/11,建国記念の日
 2024/02/12,休日
@@ -45,9 +50,11 @@ export const holidaysPresets = {
 2024/10/14,スポーツの日
 2024/11/03,文化の日
 2024/11/04,休日
-2024/11/23,勤労感謝の日`,
-    // 2025 Japan Holidays
-    '2025-JP': `2025/01/01,元日
+2024/11/23,勤労感謝の日`
+    },
+    '2025-JP': {
+        label: '2025 Japan Holidays',
+        text: `2025/01/01,元日
 2025/01/13,成人の日
 2025/02/11,建国記念の日
 2025/02/23,天皇誕生日
@@ -66,4 +73,5 @@ export const holidaysPresets = {
 2025/11/03,文化の日
 2025/11/23,勤労感謝の日
 2025/11/24,休日`
+    }
 }

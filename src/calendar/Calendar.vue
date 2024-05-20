@@ -90,7 +90,7 @@ function addPreset(key){
   if (holidays.value.csvText !== '' && holidays.value.csvText !== null) {
     holidays.value.csvText += "\n"
   }
-  holidays.value.csvText = holidays.value.csvText + holidaysPresets[key]
+  holidays.value.csvText = holidays.value.csvText + holidaysPresets[key].text
 }
 
 /**
@@ -196,6 +196,7 @@ function copyRangeText(){
       v-model="holidays.csvText"
       :isSaveTooltipVisible="isSaveTooltipVisible"
       :errors="holidays.errorMessages"
+      :presets="holidaysPresets"
       @save="saveHolidaysData"
       @addPreset="addPreset" />
     

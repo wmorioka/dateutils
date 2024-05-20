@@ -5,17 +5,14 @@ import CalendarBody from './parts/CalendarBody.vue'
 import CalendarControls from './parts/CalendarControls.vue'
 import SelectedRangeBanner from './parts/SelectedRangeBanner.vue'
 import CalendarSettings from './parts/CalendarSettings.vue'
-import { createMonthData, createSelectedRangeInfo, validateHolidaysCSV, convertHolidaysCSV } from './lib/calendarFunctions'
+import { createMonthData, createSelectedRangeInfo } from './lib/calendarFunctions'
 import { SELECT_NONE, SELECT_SINGLE, SELECT_DOUBLE, SelectState } from './lib/selectState'
-import { saveHolidays, getHolidays } from '../lib/storage'
 import { holidaysPresets } from './lib/holidaysPresets'
+import { Holidays } from './lib/holidays'
 
+const holidays = ref(new Holidays())
 const isTwoMonthsModeEnabled = ref(false)
 const baseDate = ref()
-const holidaysData = ref()
-const holidaysCSVText = ref('')
-const hasHolidaysCSVTextError = ref(false)
-const holidaysCSVTextErrors = ref([])
 const monthData = ref([])
 const state = ref(new SelectState())
 const selectStartDate = ref(null)
@@ -40,14 +37,13 @@ function init(){
   updateMonthData()
 }
 function updateHolidaysData(){
-  holidaysCSVText.value = getHolidays()
-  holidaysData.value = convertHolidaysCSV(holidaysCSVText.value)
+  holidays.value.update()
 }
 /**
  * Update months data. This data is used for calendar
  */
 function updateMonthData(){
-  monthData.value = createMonthData(baseDate.value, holidaysData.value, selectStartDate.value, selectEndDate.value)
+  monthData.value = createMonthData(baseDate.value, holidays.value, selectStartDate.value, selectEndDate.value)
   selectedRangeInfo.value = createSelectedRangeInfo(monthData.value, selectStartDate.value, selectEndDate.value)
   console.log(selectedRangeInfo.value)
 }
@@ -76,32 +72,25 @@ function toggleTwoMonthsMode(twoMonthsMode){
 function saveHolidaysData(){
   clearTimeout(saveToolipTimer.value)
   isSaveTooltipVisible.value = false
-  const result = validateHolidaysCSV(holidaysCSVText.value)
-  if (result.hasError){
-    holidaysCSVTextErrors.value = result.errorMessages
-    hasHolidaysCSVTextError.value = true
-  } else {
-    holidaysCSVTextErrors.value = []
-    hasHolidaysCSVTextError.value = false
-
-    saveHolidays(holidaysCSVText.value)
-    updateHolidaysData()
-    updateMonthData()
-    isSaveTooltipVisible.value = true
-    saveToolipTimer.value = setTimeout(() => {
-      isSaveTooltipVisible.value = false
-    }, 1000);
+  if (!holidays.value.validate() || !holidays.value.save()){
+    return false
   }
+  updateHolidaysData()
+  updateMonthData()
+  isSaveTooltipVisible.value = true
+  saveToolipTimer.value = setTimeout(() => {
+    isSaveTooltipVisible.value = false
+  }, 1000)
 }
 /**
  * Event handler for holidays preset links. Add preset CSV text to textarea
  * @param {string} key - key of holidaysPresets object
  */
 function addPreset(key){
-  if (holidaysCSVText.value !== '' && holidaysCSVText.value !== null) {
-    holidaysCSVText.value += "\n"
+  if (holidays.value.csvText !== '' && holidays.value.csvText !== null) {
+    holidays.value.csvText += "\n"
   }
-  holidaysCSVText.value = holidaysCSVText.value + holidaysPresets[key]
+  holidays.value.csvText = holidays.value.csvText + holidaysPresets[key]
 }
 
 /**
@@ -204,10 +193,9 @@ function copyRangeText(){
 
     <!-- Settings -->
     <CalendarSettings 
-      v-model="holidaysCSVText"
+      v-model="holidays.csvText"
       :isSaveTooltipVisible="isSaveTooltipVisible"
-      :hasError="hasHolidaysCSVTextError"
-      :errors="holidaysCSVTextErrors"
+      :errors="holidays.errorMessages"
       @save="saveHolidaysData"
       @addPreset="addPreset" />
     

@@ -1604,7 +1604,7 @@ div.multiselect {
 
 div.multiselect__tags {
   height: 43px;
-  width: 18rem;
+  width: 16rem;
 }
 
 @media (min-width: 640px) {
@@ -1620,7 +1620,8 @@ div.multiselect__tags {
 }
 
 div.multiselect__content-wrapper {
-  width: 18rem;
+  width: 20rem;
+  overflow-x: hidden;
 }
 
 @media (min-width: 640px) {

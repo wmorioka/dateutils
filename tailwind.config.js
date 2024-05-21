@@ -12,6 +12,16 @@ export default {
       'mono': 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
   },
+  safelist: [
+    'multiselect',
+    'multiselect__tags',
+    'multiselect__placeholder',
+    'multiselect__input',
+    'multiselect__single',
+    'multiselect__option--highlight',
+    'multiselect__content-wrapper',
+    'multiselect__option--selected'
+  ],
   plugins: [],
 }
 

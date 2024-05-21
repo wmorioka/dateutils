@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "dayjs": "^1.11.11",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vue-multiselect": "^3.0.0"
   },
   "devDependencies": {
     "@testing-library/vue": "^8.0.3",

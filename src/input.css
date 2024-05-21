@@ -232,4 +232,55 @@
             ring-red-500
             /* focus:ring-red-500 */
     }
+
+    /* Overwrite Multiselect Styles */
+    div.multiselect{
+        @apply
+            h-[43px]
+    }
+    div.multiselect__tags{
+        @apply
+            /* block
+            px-3
+            py-2
+            text-gray-700
+            bg-white
+            border
+            border-gray-300
+            rounded-md
+            shadow-sm */
+            w-72
+            sm:w-[30rem]
+            lg:w-[41rem]
+            h-[43px]
+            /* focus:outline-none */
+    }
+    div.multiselect__content-wrapper{
+        @apply
+            w-72
+            sm:w-[30rem]
+            lg:w-[41rem]
+    }
+    span.multiselect__placeholder{
+        @apply
+            text-[16px]
+    }
+    input.multiselect__input{
+        @apply
+            p-0
+            pt-1
+    }
+    span.multiselect__single{
+        @apply
+            p-0
+            pt-[0.25rem]
+            overflow-hidden
+            text-nowrap
+    }
+    span.multiselect__option--highlight,
+    span.multiselect__option--highlight::after,
+    span.multiselect__option--selected.multiselect__option--highlight{
+        @apply
+            bg-indigo-500
+    }
 }

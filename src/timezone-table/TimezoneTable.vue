@@ -1,27 +1,60 @@
 <script setup>
 import { ref } from 'vue'
 import Multiselect from 'vue-multiselect'
-import { timezones } from '../lib/timezones.js'
+import { timezones } from '../lib/timezones'
+import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs } from './lib/timezoneTableFunctions'
 
 const options = ref([])
-const selectedTimezone = ref()
+const selectedOption = ref()
+const isDeleteButtonsVisible = ref(false)
+const selectedTimezoneIDs = ref([])
+const timezoneData = ref([])
+
 init()
 
 function init(){
     options.value = []
-    for (const key in timezones) {
-        if (Object.hasOwnProperty.call(timezones, key)) {
-            const element = timezones[key];
+    for (const id in timezones) {
+        if (Object.hasOwnProperty.call(timezones, id)) {
+            const element = timezones[id];
             const label = `(UTC${element['offset']}) ${element['name']}(${element['abbreviation']}) - ${element['location']}`
-            options.value.push({ key: key, label: label })
+            options.value.push({ id: id, label: label })
         }
     }
-    console.log(options.value)
+    selectedTimezoneIDs.value = getTimezoneIDs()
+    updateTimezoneData()
 }
-
-function select(option){
-    console.log(option)
-
+function updateTimezoneData() {
+    timezoneData.value = createTimezoneData(selectedTimezoneIDs.value)
+}
+/**
+ * Add a timezone to table
+ */
+function addTimezone(){
+    if (selectedOption.value === undefined
+     || selectedTimezoneIDs.value.indexOf(selectedOption.value.id) > -1) {
+        return false
+    }
+    console.log('selected option =', selectedOption.value.id)
+    selectedTimezoneIDs.value.push(selectedOption.value.id)
+    console.log(selectedTimezoneIDs.value)
+    updateTimezoneData()
+    saveTimezoneIDs(selectedTimezoneIDs.value)
+}
+function deleteTimezone(id){
+    const index = selectedTimezoneIDs.value.indexOf(id)
+    if (index > -1) {
+        selectedTimezoneIDs.value.splice(index, 1)
+    }
+    console.log(selectedTimezoneIDs.value)
+    updateTimezoneData()
+    saveTimezoneIDs(selectedTimezoneIDs.value)
+}
+/**
+ * Toggle delete buttons visibility
+ */
+function toggleDeleteButtons(){
+    isDeleteButtonsVisible.value = !isDeleteButtonsVisible.value
 }
 
 </script>
@@ -32,20 +65,22 @@ function select(option){
             <!-- Controls -->
 
             <div class="flex">
-                <multiselect v-model="selectedTimezone" track-by="label" label="label" placeholder="Select one"
-                    :allow-empty="false" :options="options" deselect-label="" @select="select">
+                <multiselect v-model="selectedOption" track-by="label" label="label" placeholder="Select one"
+                    :allow-empty="false" :options="options" deselect-label="">
                 </multiselect>
 
-                <button id="button-add" type="button"
+                <button @click="addTimezone" type="button"
                     class="ml-2 py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-full md:w-20 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                     Add
                 </button>
             </div>
             <div>
-                <button id="button-edit" class="text-indigo-500">
+                <button id="button-edit" class="text-indigo-500" @click="toggleDeleteButtons"
+                    :class="{ hidden: isDeleteButtonsVisible }">
                     Edit
                 </button>
-                <button id="button-done" class="hidden text-indigo-500">
+                <button id="button-done" class="text-indigo-500" @click="toggleDeleteButtons"
+                    :class="{ hidden: !isDeleteButtonsVisible }">
                     Done
                 </button>
             </div>
@@ -55,54 +90,19 @@ function select(option){
             <div class="overflow-x-auto">
                 <table>
                     <tbody>
-                        <tr class="delete-button-row hidden">
-                            <th class="timezone-delete-button-cell">
-                                <button id="delete-1" class="delete-button inline cursor-pointer">
-                                    <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" width="24" height="24">
-                                        <path
-                                            d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
-                                    </svg>
-                                </button>
-                            </th>
-                            <th class="timezone-delete-button-cell">
-                                <button id="delete-2" class="delete-button inline cursor-pointer">
-                                    <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" width="24" height="24">
-                                        <path
-                                            d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
-                                    </svg>
-                                </button>
-                            </th>
-                            <th class="timezone-delete-button-cell">
-                                <button id="delete-3" class="delete-button inline cursor-pointer">
-                                    <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" width="24" height="24">
-                                        <path
-                                            d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
-                                    </svg>
-                                </button>
-                            </th>
-                            <th class="timezone-delete-button-cell">
-                                <button id="delete-4" class="delete-button inline cursor-pointer">
-                                    <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" width="24" height="24">
-                                        <path
-                                            d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
-                                    </svg>
-                                </button>
-                            </th>
-                            <th class="timezone-delete-button-cell">
-                                <button id="delete-5" class="delete-button inline cursor-pointer">
-                                    <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" width="24" height="24">
-                                        <path
-                                            d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
-                                    </svg>
-                                </button>
-                            </th>
+                        <tr class="delete-button-row" :class="{ hidden: !isDeleteButtonsVisible }">
+                            <template v-for="tz in timezoneData">
+                                <th class="timezone-delete-button-cell">
+                                    <button class="delete-button inline cursor-pointer" @click="deleteTimezone(tz.id)">
+                                        <svg class="fill-du_red inline" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24" width="24" height="24">
+                                            <path
+                                                d="m12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm5,13H7v-2h10v2Z" />
+                                        </svg>
+                                    </button>
+                                </th>
+                            </template>
                         </tr>
-
                     </tbody>
                 </table>
                 <table class="relative">
@@ -111,189 +111,28 @@ function select(option){
                             <td colspan="5" class="hidden"></td>
                         </tr>
                         <tr>
-                            <th class="timezone-header-cell">-8:00</th>
-                            <th class="timezone-header-cell">-5:00</th>
-                            <th class="timezone-header-cell">+0:00</th>
-                            <th class="timezone-header-cell">+5:30</th>
-                            <th class="timezone-header-cell">+9:00</th>
+                            <template v-for="tz in timezoneData">
+                                <th class="timezone-header-cell">{{ tz.zoneInfo.offset }}</th>
+                            </template>
                         </tr>
                         <tr>
-                            <th class="timezone-header-cell">PST</th>
-                            <th class="timezone-header-cell">EST</th>
-                            <th class="timezone-header-cell">GMT</th>
-                            <th class="timezone-header-cell">IST</th>
-                            <th class="timezone-header-cell">JST</th>
+                            <template v-for="tz in timezoneData">
+                                <th class="timezone-header-cell">
+                                    <span :title="tz.zoneInfo.name">{{ tz.zoneInfo.abbreviation }}</span>
+                                </th>
+                            </template>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="timezone-cell">16:00</td>
-                            <td class="timezone-cell bg-slate-300">19:00</td>
-                            <td class="timezone-cell bg-slate-800 text-white">0:00</td>
-                            <td class="timezone-cell bg-slate-300">5:30</td>
-                            <td class="timezone-cell">9:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-100">17:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">20:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">1:00</td>
-                            <td class="timezone-cell bg-slate-200">6:30</td>
-                            <td class="timezone-cell">10:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-200">18:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">21:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">2:00</td>
-                            <td class="timezone-cell bg-slate-100">7:30</td>
-                            <td class="timezone-cell">11:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-300">19:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">22:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">3:00</td>
-                            <td class="timezone-cell">8:30</td>
-                            <td class="timezone-cell">12:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-400 text-white">20:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">23:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">4:00</td>
-                            <td class="timezone-cell">9:30</td>
-                            <td class="timezone-cell">13:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-500 text-white">21:00</td>
-                            <td class="timezone-cell bg-slate-800 text-white">0:00</td>
-                            <td class="timezone-cell bg-slate-300">5:00</td>
-                            <td class="timezone-cell">10:30</td>
-                            <td class="timezone-cell">14:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-600 text-white">22:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">1:00</td>
-                            <td class="timezone-cell bg-slate-200">6:00</td>
-                            <td class="timezone-cell">11:30</td>
-                            <td class="timezone-cell">15:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-700 text-white">23:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">2:00</td>
-                            <td class="timezone-cell bg-slate-100">7:00</td>
-                            <td class="timezone-cell">12:30</td>
-                            <td class="timezone-cell">16:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-800 text-white">0:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">3:00</td>
-                            <td class="timezone-cell">8:00</td>
-                            <td class="timezone-cell">13:30</td>
-                            <td class="timezone-cell bg-slate-100">17:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-700 text-white">1:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">4:00</td>
-                            <td class="timezone-cell">9:00</td>
-                            <td class="timezone-cell">14:30</td>
-                            <td class="timezone-cell bg-slate-200 ">18:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-600 text-white">2:00</td>
-                            <td class="timezone-cell bg-slate-300">5:00</td>
-                            <td class="timezone-cell">10:00</td>
-                            <td class="timezone-cell">15:30</td>
-                            <td class="timezone-cell bg-slate-300 ">19:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-500 text-white">3:00</td>
-                            <td class="timezone-cell bg-slate-200">6:00</td>
-                            <td class="timezone-cell">11:00</td>
-                            <td class="timezone-cell">16:30</td>
-                            <td class="timezone-cell bg-slate-400 text-white">20:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-400 text-white">4:00</td>
-                            <td class="timezone-cell bg-slate-100">7:00</td>
-                            <td class="timezone-cell">12:00</td>
-                            <td class="timezone-cell bg-slate-100">17:30</td>
-                            <td class="timezone-cell bg-slate-500 text-white">21:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-300">5:00</td>
-                            <td class="timezone-cell">8:00</td>
-                            <td class="timezone-cell">13:00</td>
-                            <td class="timezone-cell bg-slate-200">18:30</td>
-                            <td class="timezone-cell bg-slate-600 text-white">22:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-200">6:00</td>
-                            <td class="timezone-cell">9:00</td>
-                            <td class="timezone-cell">14:00</td>
-                            <td class="timezone-cell bg-slate-300">19:30</td>
-                            <td class="timezone-cell bg-slate-700 text-white">23:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell bg-slate-100">7:00</td>
-                            <td class="timezone-cell">10:00</td>
-                            <td class="timezone-cell">15:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">20:30</td>
-                            <td class="timezone-cell bg-slate-800 text-white">0:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">8:00</td>
-                            <td class="timezone-cell">11:00</td>
-                            <td class="timezone-cell">16:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">21:30</td>
-                            <td class="timezone-cell bg-slate-700 text-white">1:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">9:00</td>
-                            <td class="timezone-cell">12:00</td>
-                            <td class="timezone-cell bg-slate-100">17:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">22:30</td>
-                            <td class="timezone-cell bg-slate-600 text-white">2:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">10:00</td>
-                            <td class="timezone-cell">13:00</td>
-                            <td class="timezone-cell bg-slate-200">18:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">23:30</td>
-                            <td class="timezone-cell bg-slate-500 text-white">3:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">11:00</td>
-                            <td class="timezone-cell">14:00</td>
-                            <td class="timezone-cell bg-slate-300">19:00</td>
-                            <td class="timezone-cell bg-slate-800 text-white">0:30</td>
-                            <td class="timezone-cell bg-slate-400 text-white">4:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">12:00</td>
-                            <td class="timezone-cell">15:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">20:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">1:30</td>
-                            <td class="timezone-cell bg-slate-300 ">5:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">13:00</td>
-                            <td class="timezone-cell">16:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">21:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">2:30</td>
-                            <td class="timezone-cell bg-slate-200 ">6:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">14:00</td>
-                            <td class="timezone-cell bg-slate-100">17:00</td>
-                            <td class="timezone-cell bg-slate-600 text-white">22:00</td>
-                            <td class="timezone-cell bg-slate-500 text-white">3:30</td>
-                            <td class="timezone-cell bg-slate-100">7:00</td>
-                        </tr>
-                        <tr>
-                            <td class="timezone-cell">15:00</td>
-                            <td class="timezone-cell bg-slate-200">18:00</td>
-                            <td class="timezone-cell bg-slate-700 text-white">23:00</td>
-                            <td class="timezone-cell bg-slate-400 text-white">4:30</td>
-                            <td class="timezone-cell">8:00</td>
-                        </tr>
+                        <template v-for="i in 24">
+                            <tr>
+                                <template v-for="tz in timezoneData">
+                                    <td class="timezone-cell" :class="tz.table[i - 1]['class']">{{tz.table[i -
+                                        1]['label']}}</td>
+                                </template>
+                            </tr>
+                        </template>
+
 
                     </tbody>
                 </table>

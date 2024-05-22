@@ -14,6 +14,7 @@ const timezoneData = ref([])
 const rowRefs = ref([])
 const headerRowRefs = ref([])
 const currentTime = ref()
+const intervalID = ref(0)
 const setRowRef = (type, index) => (el) => {
     if (type === 'header') {
         headerRowRefs.value[index] = el
@@ -25,9 +26,6 @@ init()
 
 onMounted(() => {
     updateCurrentTime()
-    setInterval(() => {
-        updateCurrentTime()
-    }, 1000 * 60)
 })
 const updateCurrentTime = () => {
     let currentTimeTop = 0
@@ -55,8 +53,26 @@ function init(){
             options.value.push({ id: id, label: label })
         }
     }
-    selectedTimezoneIDs.value = getTimezoneIDs()
+    const savedData = getTimezoneIDs()
+    if (savedData === null){
+        console.log('Set default timezones')
+        selectedTimezoneIDs.value = [
+            'UTC-8:00_PST',
+            'UTC-5:00_EST',
+            'UTC+0:00_UTC',
+            'UTC+5:30_IST',
+            'UTC+9:00_JST'
+        ]
+    } else {
+        selectedTimezoneIDs.value = savedData
+    }
+    
     updateTimezoneData()
+
+    intervalID.value = setInterval(() => {
+        updateCurrentTime()
+    }, 1000 * 60)
+
 }
 function updateTimezoneData() {
     timezoneData.value = createTimezoneData(selectedTimezoneIDs.value)
@@ -77,6 +93,10 @@ async function addTimezone(){
     await nextTick()
     updateCurrentTime()
 }
+/**
+ * Delete timezone from selected timezones
+ * @param {string} id - timezone id
+ */
 function deleteTimezone(id){
     const index = selectedTimezoneIDs.value.indexOf(id)
     if (index > -1) {
@@ -101,7 +121,7 @@ function toggleDeleteButtons(){
             <!-- Controls -->
 
             <div class="flex">
-                <multiselect v-model="selectedOption" track-by="label" label="label" placeholder="Select one"
+                <multiselect v-model="selectedOption" track-by="label" label="label" placeholder="Select timezone"
                     :allow-empty="false" :options="options" deselect-label="">
                 </multiselect>
 
@@ -170,13 +190,10 @@ function toggleDeleteButtons(){
                                 </template>
                             </tr>
                         </template>
-
-
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 </template>
 

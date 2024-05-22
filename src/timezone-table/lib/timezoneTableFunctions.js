@@ -98,7 +98,7 @@ export function getTimezoneIDs(){
         return []
     }
     if (data === null) {
-        return []
+        return null
     } else {
         return JSON.parse(data)
     }

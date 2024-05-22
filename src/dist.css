@@ -616,6 +616,14 @@ video {
   top: 8rem;
 }
 
+.top-0 {
+  top: 0px;
+}
+
+.top-\[66px\] {
+  top: 66px;
+}
+
 .order-first {
   order: -9999;
 }
@@ -1277,6 +1285,10 @@ video {
 
 .duration-200 {
   transition-duration: 200ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
 }
 
 .ease-in {

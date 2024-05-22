@@ -1,16 +1,50 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
 import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs } from './lib/timezoneTableFunctions'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 const options = ref([])
 const selectedOption = ref()
 const isDeleteButtonsVisible = ref(false)
 const selectedTimezoneIDs = ref([])
 const timezoneData = ref([])
-
+const rowRefs = ref([])
+const headerRowRefs = ref([])
+const currentTime = ref()
+const setRowRef = (type, index) => (el) => {
+    if (type === 'header') {
+        headerRowRefs.value[index] = el
+    } else {
+        rowRefs.value[index] = el
+    }
+}
 init()
+
+onMounted(() => {
+    updateCurrentTime()
+    setInterval(() => {
+        updateCurrentTime()
+    }, 1000 * 60)
+})
+const updateCurrentTime = () => {
+    let currentTimeTop = 0
+    console.log(headerRowRefs.value)
+    // Calc header rows height
+    headerRowRefs.value.forEach(el => {
+        currentTimeTop += el.getBoundingClientRect().height
+    })
+    dayjs.extend(utc)
+    const nowInUTC = dayjs().utc()
+    console.log(`Now in UTC is ${nowInUTC.format()}`)
+    for (let i = 0; i < nowInUTC.hour(); i++) {
+        currentTimeTop += rowRefs.value[i].getBoundingClientRect().height
+    }
+    currentTimeTop += (rowRefs.value[0].getBoundingClientRect().height * (nowInUTC.minute() / 60))
+    currentTime.value.style.top = `${currentTimeTop}px`
+}
 
 function init(){
     options.value = []
@@ -30,7 +64,7 @@ function updateTimezoneData() {
 /**
  * Add a timezone to table
  */
-function addTimezone(){
+async function addTimezone(){
     if (selectedOption.value === undefined
      || selectedTimezoneIDs.value.indexOf(selectedOption.value.id) > -1) {
         return false
@@ -40,6 +74,8 @@ function addTimezone(){
     console.log(selectedTimezoneIDs.value)
     updateTimezoneData()
     saveTimezoneIDs(selectedTimezoneIDs.value)
+    await nextTick()
+    updateCurrentTime()
 }
 function deleteTimezone(id){
     const index = selectedTimezoneIDs.value.indexOf(id)
@@ -107,15 +143,16 @@ function toggleDeleteButtons(){
                 </table>
                 <table class="relative">
                     <thead>
-                        <tr id="current-time" class="absolute w-full h-0.5 top-32 bg-du_red">
+                        <tr ref="currentTime"
+                            class="transition-all duration-500 absolute w-full h-0.5 top-[66px] bg-du_red">
                             <td colspan="5" class="hidden"></td>
                         </tr>
-                        <tr>
+                        <tr :ref="setRowRef('header', 0)">
                             <template v-for="tz in timezoneData">
                                 <th class="timezone-header-cell">{{ tz.zoneInfo.offset }}</th>
                             </template>
                         </tr>
-                        <tr>
+                        <tr :ref="setRowRef('header', 1)">
                             <template v-for="tz in timezoneData">
                                 <th class="timezone-header-cell">
                                     <span :title="tz.zoneInfo.name">{{ tz.zoneInfo.abbreviation }}</span>
@@ -125,10 +162,11 @@ function toggleDeleteButtons(){
                     </thead>
                     <tbody>
                         <template v-for="i in 24">
-                            <tr>
+                            <tr :ref="setRowRef('row', i-1)">
                                 <template v-for="tz in timezoneData">
-                                    <td class="timezone-cell" :class="tz.table[i - 1]['class']">{{tz.table[i -
-                                        1]['label']}}</td>
+                                    <td class="timezone-cell" :class="tz.table[i - 1]['class']">
+                                        {{tz.table[i - 1]['label']}}
+                                    </td>
                                 </template>
                             </tr>
                         </template>

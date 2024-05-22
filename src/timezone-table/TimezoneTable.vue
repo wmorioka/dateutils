@@ -144,7 +144,7 @@ function toggleDeleteButtons(){
                 <table class="relative">
                     <thead>
                         <tr ref="currentTime"
-                            class="transition-all duration-500 absolute w-full h-0.5 top-[66px] bg-du_red">
+                            class="transition-all duration-500 absolute w-full h-0.5 top-[66px] bg-du_red z-10">
                             <td colspan="5" class="hidden"></td>
                         </tr>
                         <tr :ref="setRowRef('header', 0)">
@@ -165,7 +165,7 @@ function toggleDeleteButtons(){
                             <tr :ref="setRowRef('row', i-1)">
                                 <template v-for="tz in timezoneData">
                                     <td class="timezone-cell" :class="tz.table[i - 1]['class']">
-                                        {{tz.table[i - 1]['label']}}
+                                        <span class="z-20 relative">{{tz.table[i - 1]['label']}}</span>
                                     </td>
                                 </template>
                             </tr>

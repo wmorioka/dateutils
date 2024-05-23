@@ -368,7 +368,7 @@ describe('createOptionList', () => {
             id: 'UTC-11:00_SST',
             label: '(UTC-11:00) Samoa Standard Time(SST) - Pacific',
         }
-        const expectedCount = 79
+        const expectedCount = 138
         expect(createOptionList(timezones)[0]).toMatchObject(expected)
         expect(createOptionList(timezones).length).toBe(expectedCount)
 

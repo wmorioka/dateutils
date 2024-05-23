@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils"
 import { describe, expect, it } from 'vitest'
 
-import CalendarCell from "../../../calendar/parts/CalendarCell.vue"
+import CalendarCell from "../../../calendar/components/CalendarCell.vue"
 
 describe('CalendarCell', () => {
     it("can be mounted", async () => {

@@ -118,7 +118,7 @@ function toggleDeleteButtons(){
                     :allow-empty="false" :options="options" deselect-label="">
                 </multiselect>
 
-                <button @click="addTimezone" type="button"
+                <button id="button-add" @click="addTimezone" type="button"
                     class="ml-2 py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-full md:w-20 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                     Add
                 </button>
@@ -137,7 +137,7 @@ function toggleDeleteButtons(){
         <div class="flex items-center lg:w-4/5 mx-auto mb-10 flex-row">
             <!-- Timezone Table -->
             <div class="overflow-x-auto">
-                <table>
+                <table id="delete-buttons">
                     <tbody>
                         <tr class="delete-button-row" :class="{ hidden: !isDeleteButtonsVisible }">
                             <template v-for="tz in timezoneData">
@@ -154,18 +154,18 @@ function toggleDeleteButtons(){
                         </tr>
                     </tbody>
                 </table>
-                <table class="relative">
+                <table class="relative" id="timezone-table">
                     <thead>
                         <tr ref="currentTime"
                             class="transition-all duration-500 absolute w-full h-0.5 top-[66px] bg-du_red z-10">
                             <td colspan="5" class="hidden"></td>
                         </tr>
-                        <tr :ref="setRowRef('header', 0)">
+                        <tr id="header-offset" :ref="setRowRef('header', 0)">
                             <template v-for="tz in timezoneData">
                                 <th class="timezone-header-cell">{{ tz.zoneInfo.offset }}</th>
                             </template>
                         </tr>
-                        <tr :ref="setRowRef('header', 1)">
+                        <tr id="header-abbreviation" :ref="setRowRef('header', 1)">
                             <template v-for="tz in timezoneData">
                                 <th class="timezone-header-cell">
                                     <span :title="tz.zoneInfo.name">{{ tz.zoneInfo.abbreviation }}</span>

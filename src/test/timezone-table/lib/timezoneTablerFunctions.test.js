@@ -1,6 +1,8 @@
-import { createTimezoneData } from '../../../timezone-table/lib/timezoneTableFunctions'
+import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs, createOptionList } from '../../../timezone-table/lib/timezoneTableFunctions'
 import { describe, expect, it, vi } from 'vitest'
 import { timezones } from '../../../lib/timezones'
+
+const timezonesStorageKey = '/v1/timezones-data'
 
 describe('createTimezoneData', ()=> {
     describe('single timezone selected', () => {
@@ -335,5 +337,40 @@ describe('createTimezoneData', ()=> {
             }
             expect(sortedIDs).toMatchObject(expected)
         })
+    })
+})
+describe('saveTimezoneIDs', () => {
+    it('can save data in localStorage', () => {
+        const testData = ['UTC+3:00_MSK']
+        expect(saveTimezoneIDs(testData)).toBeTruthy()
+        expect(JSON.parse(localStorage.getItem(timezonesStorageKey))).toMatchObject(testData)
+    })
+})
+describe('getTimezoneIDs', () => {
+    describe('data exists in localStorage', () => {
+        const testData = ['UTC+3:00_MSK']
+        it('returns saved data', () => {
+            localStorage.setItem(timezonesStorageKey, JSON.stringify(testData))
+            expect(getTimezoneIDs()).toMatchObject(testData)
+        })
+    })
+    describe('data does not exist in localStorage', () => {
+        it('returns null', () => {
+            localStorage.clear()
+            expect(getTimezoneIDs()).toBeNull()
+        })
+    })
+})
+
+describe('createOptionList', () => {
+    it('creates option list', () => {
+        const expected = {
+            id: 'UTC-11:00_SST',
+            label: '(UTC-11:00) Samoa Standard Time(SST) - Pacific',
+        }
+        const expectedCount = 79
+        expect(createOptionList(timezones)[0]).toMatchObject(expected)
+        expect(createOptionList(timezones).length).toBe(expectedCount)
+
     })
 })

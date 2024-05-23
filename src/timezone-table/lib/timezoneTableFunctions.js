@@ -103,3 +103,15 @@ export function getTimezoneIDs(){
         return JSON.parse(data)
     }
 }
+
+export const createOptionList = (timezones) => {
+    const options = []
+    for (const id in timezones) {
+        if (Object.hasOwnProperty.call(timezones, id)) {
+            const element = timezones[id];
+            const label = `(UTC${element['offset']}) ${element['name']}(${element['abbreviation']}) - ${element['location']}`
+            options.push({ id: id, label: label })
+        }
+    }
+    return options
+}

@@ -2,7 +2,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
-import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs } from './lib/timezoneTableFunctions'
+import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs, createOptionList } from './lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
@@ -45,14 +45,7 @@ const updateCurrentTime = () => {
 }
 
 function init(){
-    options.value = []
-    for (const id in timezones) {
-        if (Object.hasOwnProperty.call(timezones, id)) {
-            const element = timezones[id];
-            const label = `(UTC${element['offset']}) ${element['name']}(${element['abbreviation']}) - ${element['location']}`
-            options.value.push({ id: id, label: label })
-        }
-    }
+    options.value = createOptionList(timezones)
     const savedData = getTimezoneIDs()
     if (savedData === null){
         console.log('Set default timezones')

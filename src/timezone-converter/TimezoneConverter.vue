@@ -5,6 +5,7 @@ import { timezones } from '../lib/timezones'
 import { createOptionList } from '../timezone-table/lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
 import { validateDatetimeFormat } from './lib/timezonConverterFunctions'
+import { convertFormats } from './lib/convertFormats'
 
 const options = ref([])
 const date = ref()
@@ -13,25 +14,27 @@ const timezoneFrom = ref()
 const timezoneFromError = ref('')
 const timezoneTo = ref()
 const timezoneToError = ref('')
-const placeholder = ref()
-const result1 = ref()
-const result2 = ref()
-const result3 = ref()
-const result4 = ref()
-const result5 = ref()
 const isAbbreviationChecked = ref(false)
 const isUTCOffsetChecked = ref(false)
 
-const copyToolipTimer1 = ref()
-const isCopyTooltipVisible1 = ref(false)
+const results = ref([])
+const copyToolipTimers = ref([])
+const isCopyTooltipVisible = ref([])
 
 const init = () => {
     options.value = createOptionList(timezones)
-    placeholder.value = dayjs().format('YYYY/MM/DD HH:mm')
-    date.value = placeholder.value
+    date.value = dayjs().format('YYYY/MM/DD HH:mm')
+    for (let i = 0; i < convertFormats.length; i++) {
+        results.value[i] = ''
+        copyToolipTimers[i] = null
+        isCopyTooltipVisible[i] = false
+    }
 }
 init()
 
+/**
+ * Convert date timezone
+ */
 const convert = () => {
     let isError = false
     dateError.value = ''
@@ -46,7 +49,6 @@ const convert = () => {
         isError = true
         timezoneToError.value = 'Select timezone'
     }
-    console.log(`isError = ${isError}`)
     if (isError) return false
     const targetDate = dayjs(date.value)
     const from = timezones[timezoneFrom.value.id]
@@ -58,15 +60,20 @@ const convert = () => {
     let optionLabel = ''
     if (isAbbreviationChecked.value) optionLabel += ` ${to.abbreviation}`
     if (isUTCOffsetChecked.value) optionLabel += ` (UTC${to.offset})`
-    result1.value = computedDate.format('YYYY/MM/DD HH:mm') + optionLabel
-    result2.value = computedDate.format('YYYY-MM-DD HH:mm') + optionLabel
-    result3.value = computedDate.format('M/D/YY HH:mm') + optionLabel
-    result4.value = computedDate.format('M-D-YY HH:mm') + optionLabel
-    result5.value = computedDate.format('MMMM D, YYYY h:mm A') + optionLabel
+    for (let i = 0; i < convertFormats.length; i++) {
+        results.value[i] = computedDate.format(convertFormats[i]) + optionLabel
+    }
 }
+/**
+ * Handle date text box change event
+ */
 const textChange = () => {
     validateDate()
 }
+/**
+ * Validate date format
+ * @returns {bool} true is date is valid
+ */
 const validateDate = () => {
     dateError.value = ''
     console.log(date.value)
@@ -77,27 +84,40 @@ const validateDate = () => {
     }
     return dateError.value === ''
 }
-
-const selectChange = (el, option) => {
+/**
+ * Handle select change
+ * @param {string} el - from | to
+ */
+const selectChange = (el) => {
     if (el === 'from') {
         timezoneFromError.value = ''
     } else {
         timezoneToError.value = ''
     }
 }
-const selectFrom = (option) => {
-    selectChange('from', option)
+/**
+ * Handle From select change
+ */
+const selectFrom = () => {
+    selectChange('from')
 }
-const selectTo = (option) => {
-    selectChange('to', option)
+/**
+ * Handle To select change
+ */
+const selectTo = () => {
+    selectChange('to')
 }
 
-const copyResultText = () => {
-    clearTimeout(copyToolipTimer1.value)
-    navigator.clipboard.writeText(result1.value)
-    isCopyTooltipVisible1.value = true
-    copyToolipTimer1.value = setTimeout(() => {
-        isCopyTooltipVisible1.value = false
+/**
+ * Copy result text to clipboard
+ * @param {number} index - index of convert formats
+ */
+const copyResultText = (index) => {
+    clearTimeout(copyToolipTimers.value[index])
+    navigator.clipboard.writeText(results.value[index])
+    isCopyTooltipVisible.value[index] = true
+    copyToolipTimers.value[index] = setTimeout(() => {
+        isCopyTooltipVisible.value[index] = false
     }, 1000);
 
 }
@@ -119,7 +139,7 @@ const copyResultText = () => {
                         <input type="text" id="date" v-model="date" @change="textChange"
                             :class="{ error: dateError !== ''}"
                             class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" :placeholder="placeholder" />
+                            name="" placeholder="YYYY/MM/DD HH:mm" />
                         <button type="button" title="Copy" data-for="result-5"
                             class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                             <svg fill="none" class="w-4 h-4 fill-white" viewBox="0 0 24 24">
@@ -225,151 +245,36 @@ const copyResultText = () => {
             </div>
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
 
-                <!-- Result 1 -->
-                <div class="sm:col-span-3">
-                    <label for="result-1" class="inline-block  mt-2.5 ">
-                        Format 1
-                    </label>
-                </div>
-                <div class="sm:col-span-9">
-                    <div class="flex">
-                        <input type="text" id="result-1" v-model="result1"
-                            class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" value="" />
-                        <div class="tooltip">
-                            <span class="tooltip-contents-copied right-0"
-                                :class="{ hidden: !isCopyTooltipVisible1 }">Copied</span>
-                            <button type="button" title="Copy" data-for="result-1" @click="copyResultText"
-                                class="copy-button py-2 px-3 h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                                <svg class="js-clipboard-default flex-shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                </svg>
-                            </button>
+                <template v-for="(_, i) in convertFormats">
+                    <div class="sm:col-span-3">
+                        <label :for="'result-'+(i+1)" class="inline-block  mt-2.5 ">
+                            Format {{ i + 1 }}
+                        </label>
+                    </div>
+                    <div class="sm:col-span-9">
+                        <div class="flex">
+                            <input type="text" id="result-1" v-model="results[i]"
+                                class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                name="" value="" />
+                            <div class="tooltip">
+                                <span class="tooltip-contents-copied right-0"
+                                    :class="{ hidden: !isCopyTooltipVisible[i] }">Copied</span>
+                                <button type="button" title="Copy" data-for="result-1" @click="copyResultText(i)"
+                                    class="copy-button py-2 px-3 h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
+                                    <svg class="js-clipboard-default flex-shrink-0 size-4"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                                        <path
+                                            d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- /Result 1 -->
-
-                <!-- Result 2 -->
-                <div class="sm:col-span-3">
-                    <label for="result-2" class="inline-block  mt-2.5 ">
-                        Format 2
-                    </label>
-                </div>
-                <div class="sm:col-span-9">
-                    <div class="flex">
-                        <input type="text" id="result-2" v-model="result2"
-                            class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" value="" />
-                        <div class="tooltip">
-                            <span class="tooltip-contents-copied right-0 hidden">Copied</span>
-                            <button type="button" title="Copy" data-for="result-2"
-                                class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                                <svg class="js-clipboard-default flex-shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Result 2 -->
-
-                <!-- Result 3 -->
-                <div class="sm:col-span-3">
-                    <label for="result-3" class="inline-block  mt-2.5 ">
-                        Format 3
-                    </label>
-                </div>
-                <div class="sm:col-span-9">
-                    <div class="flex">
-                        <input type="text" id="result-3" v-model="result3"
-                            class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" value="" />
-                        <div class="tooltip">
-                            <span class="tooltip-contents-copied right-0 hidden">Copied</span>
-                            <button type="button" title="Copy" data-for="result-3"
-                                class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                                <svg class="js-clipboard-default flex-shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Result 3 -->
-
-                <!-- Result 4 -->
-                <div class="sm:col-span-3">
-                    <label for="result-4" class="inline-block  mt-2.5 ">
-                        Format 4
-                    </label>
-                </div>
-                <div class="sm:col-span-9">
-                    <div class="flex">
-                        <input type="text" id="result-4" v-model="result4"
-                            class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" value="" />
-                        <div class="tooltip">
-                            <span class="tooltip-contents-copied right-0 hidden">Copied</span>
-                            <button type="button" title="Copy" data-for="result-4"
-                                class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                                <svg class="js-clipboard-default flex-shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Result 4 -->
-
-                <!-- Result 5 -->
-                <div class="sm:col-span-3">
-                    <label for="result-5" class="inline-block  mt-2.5 ">
-                        Format 5
-                    </label>
-                </div>
-                <div class="sm:col-span-9">
-                    <div class="flex">
-                        <input type="text" id="result-5" v-model="result5"
-                            class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            name="" value="" />
-                        <div class="tooltip">
-                            <span class="tooltip-contents-copied right-0 hidden">Copied</span>
-                            <button type="button" title="Copy" data-for="result-5"
-                                class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                                <svg class="js-clipboard-default flex-shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Result 5 -->
+                </template>
 
             </div>
         </div>

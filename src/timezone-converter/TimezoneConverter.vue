@@ -4,7 +4,7 @@ import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
 import { createOptionList } from '../timezone-table/lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
-import { validateDatetimeFormat } from './lib/timezonConverterFunctions'
+import { validateDatetimeFormat, getConvertHistory, saveConvertHistory } from './lib/timezonConverterFunctions'
 import { convertFormats } from './lib/convertFormats'
 
 const options = ref([])
@@ -28,6 +28,15 @@ const init = () => {
         results.value[i] = ''
         copyToolipTimers[i] = null
         isCopyTooltipVisible[i] = false
+    }
+    // load saved data
+    const history = getConvertHistory()
+    if (history !== null){
+        date.value = history.date
+        timezoneFrom.value = history.timezoneFrom
+        timezoneTo.value = history.timezoneTo
+        isAbbreviationChecked.value = history.isAbbreviationChecked
+        isUTCOffsetChecked.value = history.isUTCOffsetChecked
     }
 }
 init()
@@ -63,6 +72,15 @@ const convert = () => {
     for (let i = 0; i < convertFormats.length; i++) {
         results.value[i] = computedDate.format(convertFormats[i]) + optionLabel
     }
+    // save data
+    const history = {}
+    history.date = date.value
+    history.timezoneFrom = timezoneFrom.value
+    history.timezoneTo = timezoneTo.value
+    history.isAbbreviationChecked = isAbbreviationChecked.value
+    history.isUTCOffsetChecked = isUTCOffsetChecked.value
+    saveConvertHistory(history)
+
 }
 /**
  * Handle date text box change event

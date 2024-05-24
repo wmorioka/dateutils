@@ -128,9 +128,9 @@ const copyResultText = (index) => {
         <div class="lg:w-4/5 mx-auto mb-10 ">
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
                 <div class="sm:col-span-3">
-                    <label for="date" class="inline-block  mt-2.5 ">
+                    <span class="inline-block  mt-2.5 ">
                         Date
-                    </label>
+                    </span>
                 </div>
                 <!-- End Col -->
 
@@ -157,9 +157,9 @@ const copyResultText = (index) => {
                 <!-- End Col -->
 
                 <div class="sm:col-span-3">
-                    <label class="inline-block  mt-2.5">
+                    <span class="inline-block  mt-2.5">
                         From
-                    </label>
+                    </span>
                 </div>
                 <!-- End Col -->
 
@@ -178,9 +178,9 @@ const copyResultText = (index) => {
                 <!-- End Col -->
 
                 <div class="sm:col-span-3">
-                    <label class="inline-block  mt-2.5">
+                    <span class="inline-block  mt-2.5">
                         To
-                    </label>
+                    </span>
                 </div>
                 <!-- End Col -->
 
@@ -199,9 +199,9 @@ const copyResultText = (index) => {
                 <!-- End Col -->
 
                 <div class="sm:col-span-3">
-                    <label class="inline-block  mt-2.5">
+                    <span class="inline-block  mt-2.5">
                         Options
-                    </label>
+                    </span>
                 </div>
 
                 <div class="sm:col-span-9">
@@ -247,19 +247,19 @@ const copyResultText = (index) => {
 
                 <template v-for="(_, i) in convertFormats">
                     <div class="sm:col-span-3">
-                        <label :for="'result-'+(i+1)" class="inline-block  mt-2.5 ">
+                        <span class="inline-block  mt-2.5 ">
                             Format {{ i + 1 }}
-                        </label>
+                        </span>
                     </div>
                     <div class="sm:col-span-9">
                         <div class="flex">
-                            <input type="text" id="result-1" v-model="results[i]"
+                            <input type="text" v-model="results[i]"
                                 class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 name="" value="" />
                             <div class="tooltip">
                                 <span class="tooltip-contents-copied right-0"
                                     :class="{ hidden: !isCopyTooltipVisible[i] }">Copied</span>
-                                <button type="button" title="Copy" data-for="result-1" @click="copyResultText(i)"
+                                <button type="button" title="Copy" @click="copyResultText(i)"
                                     class="copy-button py-2 px-3 h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                                     <svg class="js-clipboard-default flex-shrink-0 size-4"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

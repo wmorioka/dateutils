@@ -109,7 +109,7 @@ export const createOptionList = (timezones) => {
     for (const id in timezones) {
         if (Object.hasOwnProperty.call(timezones, id)) {
             const element = timezones[id];
-            const label = `(UTC${element['offset']}) ${element['name']}(${element['abbreviation']}) - ${element['location']}`
+            const label = `(UTC${element['offset']}) ${element['name']} (${element['abbreviation']}) - ${element['location']}`
             options.push({ id: id, label: label })
         }
     }

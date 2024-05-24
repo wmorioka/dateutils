@@ -11,7 +11,7 @@ describe('TimezoneTable', () => {
     describe('Combo box', () => {
         it('timezone item exists in list', async () => {
             const wrapper = mount(TimezoneTable)
-            const expected = '(UTC-11:00) Samoa Standard Time(SST) - Pacific'
+            const expected = '(UTC-11:00) Samoa Standard Time (SST) - Pacific'
             expect(wrapper.find('.multiselect__element:first-child').text()).toBe(expected)
         })
     })

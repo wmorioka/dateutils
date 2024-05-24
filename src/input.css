@@ -233,27 +233,47 @@
             /* focus:ring-red-500 */
     }
 
+    #timezone-converter-app {
+        @apply
+            min-h-[786px]
+    }
     /* Overwrite Multiselect Styles */
     div.multiselect{
         @apply
             h-[43px]
     }
+    
     div.multiselect__tags{
         @apply
-            /* block
-            px-3
-            py-2
-            text-gray-700
-            bg-white
-            border
-            border-gray-300
-            rounded-md
-            shadow-sm */
             w-64
             sm:w-[30rem]
             lg:w-[41rem]
             h-[43px]
-            /* focus:outline-none */
+            border-gray-300
+            rounded-lg
+    }
+    .multiselect-error div.multiselect__tags, input.error {
+        @apply
+            outline
+            outline-2
+            outline-red-500
+            border-transparent
+    }
+
+    div.multiselect--active.multiselect div.multiselect__tags{
+        @apply
+            outline
+            outline-2
+            outline-indigo-500
+            border-transparent
+    }
+    div.multiselect--active:not(.multiselect--above) .multiselect__tags{
+        @apply
+            rounded-lg
+    }
+    #timezone-converter-app div.multiselect__tags{
+        @apply
+            w-full
     }
     div.multiselect__content-wrapper{
         @apply
@@ -261,10 +281,18 @@
             sm:w-[30rem]
             lg:w-[41rem]
             overflow-x-hidden
+            border-gray-300
+            rounded-b-lg
+            rounded-bl-lg
+    }
+    #timezone-converter-app div.multiselect__content-wrapper{
+        @apply
+            w-full
     }
     span.multiselect__placeholder{
         @apply
             text-[16px]
+            placeholder-gray-400
     }
     input.multiselect__input{
         @apply
@@ -277,6 +305,7 @@
             pt-[0.25rem]
             overflow-hidden
             text-nowrap
+            text-gray-700
     }
     span.multiselect__option--highlight,
     span.multiselect__option--highlight::after,

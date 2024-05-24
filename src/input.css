@@ -272,8 +272,9 @@
             rounded-lg
     }
     #timezone-converter-app div.multiselect__tags{
+        width: calc(100vw - 2.5rem);
         @apply
-            w-full
+            sm:w-full
     }
     div.multiselect__content-wrapper{
         @apply

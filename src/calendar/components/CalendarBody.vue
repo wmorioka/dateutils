@@ -17,20 +17,20 @@ function onCellClick(date) {
 <template>
     <div :class="{ 'hidden': isSecondMonth && !isTwoMonthsModeEnabled }">
         <!-- header -->
-        <div class="flex mb-5 pt-1">
-            <span class="text-xl md:text-2xl select-none">{{ monthData.label }}</span>
+        <div class="calendar-header-container">
+            <span class="calendar-header-title">{{ monthData.label }}</span>
         </div>
         <!-- calendar body -->
         <div>
             <!-- Weekdays -->
-            <div class="grid grid-cols-7 text-sm md:text-xl border-b border-gray-200 mb-1 md:mb-3 select-none">
-                <span class="calendar-header">S<span class="hidden lg:inline">un</span></span>
-                <span class="calendar-header">M<span class="hidden lg:inline">on</span></span>
-                <span class="calendar-header">T<span class="hidden lg:inline">ue</span></span>
-                <span class="calendar-header">W<span class="hidden lg:inline">ed</span></span>
-                <span class="calendar-header">T<span class="hidden lg:inline">hu</span></span>
-                <span class="calendar-header">F<span class="hidden lg:inline">ri</span></span>
-                <span class="calendar-header">S<span class="hidden lg:inline">at</span></span>
+            <div class="calendar-weekdays">
+                <span class="calendar-header">S<span class="calendar-header-small-letters">un</span></span>
+                <span class="calendar-header">M<span class="calendar-header-small-letters">on</span></span>
+                <span class="calendar-header">T<span class="calendar-header-small-letters">ue</span></span>
+                <span class="calendar-header">W<span class="calendar-header-small-letters">ed</span></span>
+                <span class="calendar-header">T<span class="calendar-header-small-letters">hu</span></span>
+                <span class="calendar-header">F<span class="calendar-header-small-letters">ri</span></span>
+                <span class="calendar-header">S<span class="calendar-header-small-letters">at</span></span>
             </div>
             <!-- days -->
             <div class="grid grid-cols-7 text-base md:text-xl">

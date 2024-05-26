@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
 import { createOptionList } from '../timezone-table/lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
 import { validateDatetimeFormat, getConvertHistory, saveConvertHistory } from './lib/timezonConverterFunctions'
 import { convertFormats } from './lib/convertFormats'
+import DatePicker from '../calendar/components/DatePicker.vue'
 
 const options = ref([])
 const date = ref()
@@ -20,6 +21,24 @@ const isUTCOffsetChecked = ref(false)
 const results = ref([])
 const copyToolipTimers = ref([])
 const isCopyTooltipVisible = ref([])
+const isDatePickerVisible = ref(false)
+const datePickerDate = ref()
+
+onMounted(() => {
+    // Close DatePicker if user clicks outside DatePicker
+    // ToDo: if user click Multiselect, DatePicker doesn't close
+    document.addEventListener('click', (el) => {
+        const datePickerElement = document.getElementById('date-picker')
+        const datePickerButtonElement = document.getElementById('toggle-date-picker')
+        if (!datePickerElement.contains(el.target) 
+            && !datePickerButtonElement.contains(el.target)){
+            if (isDatePickerVisible.value){
+                isDatePickerVisible.value = false
+            }
+        }
+        return true
+    })
+})
 
 const init = () => {
     options.value = createOptionList(timezones)
@@ -38,6 +57,7 @@ const init = () => {
         isAbbreviationChecked.value = history.isAbbreviationChecked
         isUTCOffsetChecked.value = history.isUTCOffsetChecked
     }
+    datePickerDate.value = dayjs(date.value)
 }
 init()
 
@@ -139,6 +159,16 @@ const copyResultText = (index) => {
     }, 1000);
 
 }
+
+
+const toggleDatePicker = () => {
+    isDatePickerVisible.value = !isDatePickerVisible.value
+}
+const onDatePickerClosed = () => {
+    isDatePickerVisible.value = false
+    console.log(datePickerDate.value)
+    date.value = datePickerDate.value.format('YYYY/MM/DD HH:mm')
+}
 </script>
 
 <template>
@@ -158,13 +188,17 @@ const copyResultText = (index) => {
                             :class="{ error: dateError !== ''}"
                             class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             name="" placeholder="YYYY/MM/DD HH:mm" />
-                        <button type="button" title="Copy" data-for="result-5"
-                            class="copy-button py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                            <svg fill="none" class="w-4 h-4 fill-white" viewBox="0 0 24 24">
-                                <path
-                                    d="m8,12h-2c-1.103,0-2,.897-2,2v2c0,1.103.897,2,2,2h2c1.103,0,2-.897,2-2v-2c0-1.103-.897-2-2-2Zm-2,4v-2h2v2s-2,0-2,0ZM19,2h-1v-1c0-.552-.447-1-1-1s-1,.448-1,1v1h-8v-1c0-.552-.447-1-1-1s-1,.448-1,1v1h-1C2.243,2,0,4.243,0,7v12c0,2.757,2.243,5,5,5h14c2.757,0,5-2.243,5-5V7c0-2.757-2.243-5-5-5Zm-14,2h14c1.654,0,3,1.346,3,3v1H2v-1c0-1.654,1.346-3,3-3Zm14,18H5c-1.654,0-3-1.346-3-3v-9h20v9c0,1.654-1.346,3-3,3Z" />
-                            </svg>
-                        </button>
+                        <div class="relative">
+                            <button id="toggle-date-picker" type="button" title="Pick a date" @click="toggleDatePicker"
+                                class="py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
+                                <svg fill="none" class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                                    <path
+                                        d="m8,12h-2c-1.103,0-2,.897-2,2v2c0,1.103.897,2,2,2h2c1.103,0,2-.897,2-2v-2c0-1.103-.897-2-2-2Zm-2,4v-2h2v2s-2,0-2,0ZM19,2h-1v-1c0-.552-.447-1-1-1s-1,.448-1,1v1h-8v-1c0-.552-.447-1-1-1s-1,.448-1,1v1h-1C2.243,2,0,4.243,0,7v12c0,2.757,2.243,5,5,5h14c2.757,0,5-2.243,5-5V7c0-2.757-2.243-5-5-5Zm-14,2h14c1.654,0,3,1.346,3,3v1H2v-1c0-1.654,1.346-3,3-3Zm14,18H5c-1.654,0-3-1.346-3-3v-9h20v9c0,1.654-1.346,3-3,3Z" />
+                                </svg>
+                            </button>
+                            <DatePicker v-model="datePickerDate" :isVisible="isDatePickerVisible"
+                                @doneButtonClick="onDatePickerClosed" />
+                        </div>
                     </div>
                     <template v-if="dateError !== ''">
                         <div class="text-red-500 pl-[2px]">

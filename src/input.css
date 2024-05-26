@@ -13,7 +13,7 @@
     /* Weekdays at the calendar */
     .calendar-header{
         @apply
-            font-light
+            font-normal
             w-full
             h-8
             md:h-10
@@ -21,6 +21,10 @@
             items-center
             justify-center
             ;
+    }
+    .calendar-header-small-letters{
+        @apply
+            hidden lg:inline
     }
     /* days at the calendar */
     .calendar-cell{
@@ -64,9 +68,13 @@
             ;
     }
     .selected {
-        top: calc(50% - 1rem - 6px);
-        right: calc(50% - 1rem - 6px);
         @apply 
+            /* align center */
+            left-1/2
+            -translate-x-1/2
+            /* align middle */
+            top-1/2
+            -translate-y-1/2
             absolute
             h-11
             w-11
@@ -216,6 +224,30 @@
             min-w-20
             ;
     }
+    .calendar-header-container{
+        @apply
+            flex mb-5 pt-1
+    }
+    .calendar-header-title{
+        @apply
+            text-xl md:text-2xl select-none
+    }
+    .calendar-weekdays{
+        @apply
+             grid grid-cols-7 text-sm md:text-xl border-b border-gray-200 font-light mb-1 md:mb-3 select-none
+    }
+    .calendar-controls {
+        @apply
+            absolute right-0
+    }
+    .calendar-prev-button{
+        @apply
+            mr-3
+    }
+    .calendar-next-button{
+        @apply
+            mr-5
+    }
     /* 
     For Vue Apps
     Avoid flapping
@@ -267,7 +299,8 @@
             outline-indigo-500
             border-transparent
     }
-    div.multiselect--active:not(.multiselect--above) .multiselect__tags{
+    div.multiselect--active:not(.multiselect--above) .multiselect__tags,
+    div.multiselect--above.multiselect--active .multiselect__tags{
         @apply
             rounded-lg
     }
@@ -285,6 +318,7 @@
             border-gray-300
             rounded-b-lg
             rounded-bl-lg
+            shadow-md
     }
     #timezone-converter-app div.multiselect__content-wrapper{
         @apply
@@ -313,5 +347,97 @@
     span.multiselect__option--selected.multiselect__option--highlight{
         @apply
             bg-indigo-500
+    }
+
+    .date-picker {
+        @apply
+            absolute
+            w-[270px]
+            right-0
+            bg-white
+            z-50
+            border
+            border-gray-300
+            rounded-lg
+            shadow-md
+    }
+    .date-picker .calendar-header{
+        @apply
+            h-6
+            md:text-sm
+            font-normal
+    }
+    .date-picker .calendar-cell{
+        @apply 
+            h-10
+            text-sm
+    }
+    .date-picker .calendar-cell .day{
+        @apply
+            w-7
+            h-7
+    }
+    .date-picker .selected {
+        /* top: calc(50% - 1rem - 6px); */
+        
+        @apply 
+            h-9
+            w-9
+            left-1/2
+            -translate-x-1/2
+            top-1/2
+            -translate-y-1/2
+    }
+    .date-picker .date-picker-time{
+        @apply
+            flex
+            justify-center
+            items-center
+            gap-2
+            border-t
+            border-t-gray-300
+            py-2
+    }
+    .date-picker .select-base{
+        @apply
+            relative flex justify-center items-center h-7
+    }
+    .date-picker .select-base .select{
+        @apply
+            appearance-none
+            h-7
+            px-2
+            bg-white
+    }
+    .date-picker .calendar-header-container{
+        @apply
+            p-1 mb-1
+    }
+    .date-picker .calendar-header-title{
+        @apply
+            text-lg
+    }
+    .date-picker .calendar-weekdays {
+        @apply
+            border-0
+            md:mb-1
+            md:text-sm
+            
+    }
+    .date-picker .calendar-controls{
+        @apply
+            top-3
+    }
+    .date-picker .calendar-prev-button{
+        @apply
+            mr-1
+    }
+    .date-picker .calendar-next-button{
+        @apply
+            mr-2
+    }
+    .date-picker .calendar-header-small-letters{
+        @apply
+            lg:hidden
     }
 }

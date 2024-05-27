@@ -82,7 +82,7 @@ const now = () => {
     <div id="date-picker" class="date-picker" :class="{ hidden: isVisible === false }">
         <div class="relative">
             <!-- Control -->
-            <CalendarControls date-picker-mode="true" @move="move" @now="now"/>
+            <CalendarControls date-picker-mode="true" @move="move" @now="now" />
             <div class="p-2">
                 <CalendarBody :monthData="monthData[0]" :isTwoMonthsModeEnabled="false" :isSecondMonth="false"
                     @on-cell-click="onCellClick" />
@@ -94,14 +94,14 @@ const now = () => {
                         <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div class="select-base">
-                        <select class="select" v-model="hour" @change="hourChange">
+                        <select id="date-picker-hour" class="select" v-model="hour" @change="hourChange">
                             <option v-for="i in 24" :value="i - 1">
                                 {{ (i - 1 < 10) ? '0' + (i - 1) : i - 1 }} </option>
                         </select>
                     </div>
-                    <span class="vc-time-colon">:</span>
+                    <span class="time-colon">:</span>
                     <div class="select-base">
-                        <select class="select" v-model="minute" @change="minuteChange">
+                        <select id="date-picker-minute" class="select" v-model="minute" @change="minuteChange">
                             <option v-for="i in 60" :value="i - 1">
                                 {{ (i - 1 < 10) ? '0' + (i - 1) : i - 1 }} </option>
                         </select>

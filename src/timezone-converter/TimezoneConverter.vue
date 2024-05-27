@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onBeforeMount, ref } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
 import { createOptionList } from '../timezone-table/lib/timezoneTableFunctions'
@@ -17,7 +17,6 @@ const timezoneTo = ref()
 const timezoneToError = ref('')
 const isAbbreviationChecked = ref(false)
 const isUTCOffsetChecked = ref(false)
-
 const results = ref([])
 const copyToolipTimers = ref([])
 const isCopyTooltipVisible = ref([])
@@ -26,7 +25,6 @@ const datePickerDate = ref()
 
 onMounted(() => {
     // Close DatePicker if user clicks outside DatePicker
-    // ToDo: if user click Multiselect, DatePicker doesn't close
     document.addEventListener('click', (el) => {
         const datePickerElement = document.getElementById('date-picker')
         const datePickerButtonElement = document.getElementById('toggle-date-picker')
@@ -40,7 +38,7 @@ onMounted(() => {
     })
 })
 
-const init = () => {
+onBeforeMount(() => {
     options.value = createOptionList(timezones)
     date.value = dayjs().format('YYYY/MM/DD HH:mm')
     for (let i = 0; i < convertFormats.length; i++) {
@@ -50,7 +48,7 @@ const init = () => {
     }
     // load saved data
     const history = getConvertHistory()
-    if (history !== null){
+    if (history !== null) {
         date.value = history.date
         timezoneFrom.value = history.timezoneFrom
         timezoneTo.value = history.timezoneTo
@@ -58,8 +56,7 @@ const init = () => {
         isUTCOffsetChecked.value = history.isUTCOffsetChecked
     }
     datePickerDate.value = dayjs(date.value)
-}
-init()
+})
 
 /**
  * Convert date timezone
@@ -83,9 +80,9 @@ const convert = () => {
     const from = timezones[timezoneFrom.value.id]
     const to = timezones[timezoneTo.value.id]
     const offset = from.offsetMinites - to.offsetMinites
-    console.log(`Offset is ${offset}`)
+    // console.log(`Offset is ${offset}`)
     const computedDate = targetDate.subtract(offset, 'minute')
-    console.log(`computedDate is ${computedDate}`)
+    // console.log(`computedDate is ${computedDate}`)
     let optionLabel = ''
     if (isAbbreviationChecked.value) optionLabel += ` ${to.abbreviation}`
     if (isUTCOffsetChecked.value) optionLabel += ` (UTC${to.offset})`
@@ -100,7 +97,6 @@ const convert = () => {
     history.isAbbreviationChecked = isAbbreviationChecked.value
     history.isUTCOffsetChecked = isUTCOffsetChecked.value
     saveConvertHistory(history)
-
 }
 /**
  * Handle date text box change event
@@ -145,7 +141,6 @@ const selectFrom = () => {
 const selectTo = () => {
     selectChange('to')
 }
-
 /**
  * Copy result text to clipboard
  * @param {number} index - index of convert formats
@@ -156,18 +151,29 @@ const copyResultText = (index) => {
     isCopyTooltipVisible.value[index] = true
     copyToolipTimers.value[index] = setTimeout(() => {
         isCopyTooltipVisible.value[index] = false
-    }, 1000);
-
+    }, 1000)
 }
-
-
+/**
+ * Toggle DatePicker visibility
+ */
 const toggleDatePicker = () => {
     isDatePickerVisible.value = !isDatePickerVisible.value
 }
+/**
+ * Handle DatePicker close event
+ */
 const onDatePickerClosed = () => {
     isDatePickerVisible.value = false
-    console.log(datePickerDate.value)
     date.value = datePickerDate.value.format('YYYY/MM/DD HH:mm')
+}
+/**
+ * Handle multiselect open event
+ */
+const onMultiselectOpen = () => {
+    // close DatePicker if opened
+    if (isDatePickerVisible.value) {
+        isDatePickerVisible.value = false
+    }
 }
 </script>
 
@@ -201,7 +207,7 @@ const onDatePickerClosed = () => {
                         </div>
                     </div>
                     <template v-if="dateError !== ''">
-                        <div class="text-red-500 pl-[2px]">
+                        <div id="date-error" class="text-red-500 pl-[2px]">
                             {{ dateError }}
                         </div>
                     </template>
@@ -215,10 +221,11 @@ const onDatePickerClosed = () => {
                 </div>
                 <!-- End Col -->
 
-                <div class="sm:col-span-9">
+                <div class="sm:col-span-9" id="timezone-from">
                     <div :class="{ 'multiselect-error': timezoneFromError !== ''}">
                         <multiselect v-model="timezoneFrom" track-by="label" label="label" placeholder="Select timezone"
-                            :allow-empty="false" :options="options" deselect-label="" @select="selectFrom">
+                            :allow-empty="false" :options="options" deselect-label="" @select="selectFrom"
+                            @open="onMultiselectOpen">
                         </multiselect>
                     </div>
                     <template v-if="timezoneFromError !== ''">
@@ -236,10 +243,11 @@ const onDatePickerClosed = () => {
                 </div>
                 <!-- End Col -->
 
-                <div class="sm:col-span-9">
+                <div class="sm:col-span-9" id="timezone-to">
                     <div :class="{ 'multiselect-error': timezoneToError !== ''}">
                         <multiselect v-model="timezoneTo" track-by="label" label="label" placeholder="Select timezone"
-                            :allow-empty="false" :options="options" deselect-label="" @select="selectTo">
+                            :allow-empty="false" :options="options" deselect-label="" @select="selectTo"
+                            @open="onMultiselectOpen">
                         </multiselect>
                     </div>
                     <template v-if="timezoneToError !== ''">
@@ -275,7 +283,7 @@ const onDatePickerClosed = () => {
             </div>
 
             <div class="mb-12 mt-6 w-full text-center">
-                <button type="button" @click="convert"
+                <button id="convert-button" type="button" @click="convert"
                     class="py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-40 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                     Convert
                 </button>
@@ -305,13 +313,13 @@ const onDatePickerClosed = () => {
                     </div>
                     <div class="sm:col-span-9">
                         <div class="flex">
-                            <input type="text" v-model="results[i]"
+                            <input type="text" v-model="results[i]" :id="'result-' + (i+1)"
                                 class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 name="" value="" />
                             <div class="tooltip">
                                 <span class="tooltip-contents-copied right-0"
                                     :class="{ hidden: !isCopyTooltipVisible[i] }">Copied</span>
-                                <button type="button" title="Copy" @click="copyResultText(i)"
+                                <button type="button" title="Copy" @click="copyResultText(i)" 
                                     class="copy-button py-2 px-3 h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                                     <svg class="js-clipboard-default flex-shrink-0 size-4"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

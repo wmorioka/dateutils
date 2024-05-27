@@ -6,7 +6,7 @@ defineProps(['isTwoMonthsModeEnabled', 'datePickerMode'])
     <div class="calendar-controls">
         <div class="flex items-center">
             <template v-if="datePickerMode">
-                <button type="button" title="Select now" @click="$emit('now')"
+                <button id="date-picker-now" type="button" title="Select now" @click="$emit('now')"
                     class="mr-2 py-0.5 px-1 border-2 border-indigo-500 text-indigo-600 bg-white hover:bg-gray-200 active:text-white active:bg-indigo-500 focus:ring-indigo-500 w-auto transition ease-in duration-200 text-center focus:outline-none rounded-lg text-sm">
                     Now
                 </button>

@@ -33,7 +33,7 @@ function onCellClick(date) {
                 <span class="calendar-header">S<span class="calendar-header-small-letters">at</span></span>
             </div>
             <!-- days -->
-            <div class="grid grid-cols-7 text-base md:text-xl">
+            <div class="grid grid-cols-7 text-base md:text-xl" data-test="days">
                 <CalendarEmptyCell v-for="_ in monthData.days[0].dayOfWeek" />
                 <CalendarCell v-for="date in monthData.days" :date="date" @cell-click="onCellClick" />
             </div>

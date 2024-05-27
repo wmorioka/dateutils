@@ -18,6 +18,7 @@ export default defineConfig({
         calendar: resolve(root, 'calendar.html'),
         timezoneTable: resolve(root, 'timezone-table.html'),
         timezoneConverter: resolve(root, 'timezone-converter.html'),
+        indexJP: resolve(root, 'jp/index.html'),
         notfound: resolve(root, '404.html'),
       },
     },

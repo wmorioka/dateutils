@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dateutils</title>
+    <link href="/dist.css" rel="stylesheet">
+    <meta name="description" content="カレンダー、タイムゾーン、日付変換など日付に関する無料ツールを掲載しています。">
+
+    <meta property="og:title" content="Dateutils">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <meta property="og:image:alt" content="">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <meta name="theme-color" content="#6366f1">
+    <script type="module" src="../lib/app.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8NK64NJECQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-8NK64NJECQ');
+    </script>
+</head>
+
+<body>
+    <header class="text-gray-800 body-font border-b border-gray-200">
+        <div class="container mx-auto flex flex-wrap p-5 md:flex-row justify-between">
+            <div class="flex">
+                <a href="/" class="flex title-font items-center text-gray-900 md:mb-0">
+                    <!-- <svg width="26" height="26" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="35" height="35" rx="6" fill="#444444" />
+                        <path
+                            d="M7.752 26.8V8.752C7.752 6.288 8.744 5.296 11.016 5.296H16.712C23.784 5.296 27.944 9.776 27.944 17.488C27.944 25.456 23.72 30.224 16.712 30.224H11.016C8.744 30.224 7.752 29.232 7.752 26.8ZM10.792 9.104V26.352C10.792 27.088 11.176 27.44 11.816 27.44H16.552C21.736 27.44 24.776 23.76 24.776 17.52C24.776 11.408 21.928 8.048 16.648 8.048H11.848C11.24 8.048 10.792 8.432 10.792 9.104Z"
+                            fill="white" />
+                    </svg> -->
+                    <span class="text-xl ">Dateutils</span>
+                </a>
+            </div>
+            <div class="flex">
+                <div id="toggle-menu" class="grid place-content-center cursor-pointer">
+                    <div class="w-7 h-0.5 bg-black rounded-full transition-all duration-150 before:content-[''] before:absolute before:w-7 before:h-0.5 before:bg-black before:rounded-full before:-translate-y-2 before:transition-all before:duration-150 after:content-[''] after:absolute after:w-7 after:h-0.5 after:bg-black after:rounded-full after:translate-y-2 after:transition-all after:duration-150"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <nav id="menu" class="border-b border-gray-200 text-center p-5 text-gray-800 select-none hidden">
+        <div class="text-xl ">
+            <div class="p-3">
+                <a href="/calendar.html" class="inline-block ">Calendar</a>
+            </div>
+            <div class="p-3">
+                <a href="/timezone-table.html" class="inline-block ">Timezone Table</a>
+            </div>
+            <div class="p-3">
+                <a href="/timezone-converter.html" class="inline-block ">Timezone Converter</a>
+            </div>
+        </div>
+        <div class="pb-3">
+            <div class="mb-1">
+                <svg class="h-10 w-10 stroke-gray-400 inline-block" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                    baseProfile="full" enable-background="new 0 0 76.00 76.00" xml:space="preserve" fill="">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path fill="" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round"
+                            d="M 38,15.8333C 50.2423,15.8333 60.1667,25.7577 60.1667,38C 60.1667,50.2423 50.2423,60.1667 38,60.1667C 25.7577,60.1667 15.8333,50.2423 15.8333,38C 15.8333,25.7577 25.7577,15.8333 38,15.8333 Z M 19.065,36.4167L 25.3651,36.4167C 25.4708,33.796 25.8368,31.3011 26.4182,29.0106C 24.9471,28.4945 23.5896,27.8831 22.3719,27.1913C 20.5281,29.8522 19.3463,33.0068 19.065,36.4167 Z M 30.0541,20.7363C 27.8969,21.7308 25.9579,23.1177 24.3286,24.8056C 25.236,25.2756 26.2395,25.6989 27.3232,26.0677C 28.064,24.0419 28.9879,22.241 30.0541,20.7363 Z M 36.4167,36.4167L 36.4167,30.8432C 33.9463,30.7436 31.5878,30.4126 29.4069,29.8881C 28.9321,31.8962 28.6282,34.0974 28.5325,36.4167L 36.4167,36.4167 Z M 36.4167,19.2627C 33.9024,20.1063 31.7231,22.9251 30.2911,26.8939C 32.1894,27.3157 34.2515,27.5865 36.4167,27.6758L 36.4167,19.2627 Z M 56.9349,36.4167C 56.6536,33.0068 55.4719,29.8523 53.6281,27.1913C 52.4104,27.8831 51.0528,28.4946 49.5818,29.0107C 50.1631,31.3011 50.5291,33.796 50.6348,36.4167L 56.9349,36.4167 Z M 45.9459,20.7363C 47.012,22.241 47.9359,24.042 48.6767,26.0677C 49.7605,25.6989 50.7639,25.2756 51.6714,24.8056C 50.0421,23.1177 48.1031,21.7308 45.9459,20.7363 Z M 39.5833,36.4167L 47.4674,36.4167C 47.3718,34.0974 47.0678,31.8962 46.5931,29.8881C 44.4122,30.4126 42.0536,30.7436 39.5833,30.8432L 39.5833,36.4167 Z M 39.5833,19.2627L 39.5833,27.6758C 41.7484,27.5865 43.8106,27.3157 45.7088,26.8939C 44.2769,22.9251 42.0975,20.1064 39.5833,19.2627 Z M 56.9349,39.5834L 50.6348,39.5834C 50.5291,42.204 50.1631,44.6989 49.5818,46.9894C 51.0528,47.5055 52.4104,48.1169 53.6281,48.8087C 55.4719,46.1478 56.6536,42.9932 56.9349,39.5834 Z M 45.9459,55.2638C 48.1031,54.2692 50.0421,52.8823 51.6714,51.1944C 50.764,50.7244 49.7605,50.3011 48.6767,49.9323C 47.9359,51.9581 47.012,53.7591 45.9459,55.2638 Z M 39.5833,39.5834L 39.5833,45.1568C 42.0536,45.2564 44.4122,45.5874 46.5931,46.1119C 47.0678,44.1038 47.3718,41.9027 47.4675,39.5834L 39.5833,39.5834 Z M 39.5833,56.7373C 42.0975,55.8937 44.2769,53.075 45.7089,49.1061C 43.8106,48.6843 41.7484,48.4135 39.5833,48.3242L 39.5833,56.7373 Z M 19.065,39.5834C 19.3463,42.9932 20.5281,46.1478 22.3719,48.8087C 23.5896,48.1169 24.9471,47.5055 26.4182,46.9894C 25.8368,44.6989 25.4708,42.204 25.3651,39.5834L 19.065,39.5834 Z M 30.0541,55.2638C 28.988,53.7591 28.0641,51.9581 27.3232,49.9323C 26.2395,50.3011 25.236,50.7244 24.3286,51.1945C 25.9579,52.8823 27.8969,54.2693 30.0541,55.2638 Z M 36.4167,39.5834L 28.5325,39.5834C 28.6282,41.9027 28.9321,44.1039 29.4069,46.1119C 31.5878,45.5874 33.9463,45.2564 36.4167,45.1568L 36.4167,39.5834 Z M 36.4167,56.7373L 36.4167,48.3242C 34.2515,48.4135 32.1893,48.6843 30.2911,49.1061C 31.7231,53.075 33.9024,55.8937 36.4167,56.7373 Z ">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+            <div class="">
+                <a href="/" class="">English</a>
+                <span class="ml-1">|</span>
+                <a href="/jp/" class="ml-1">日本語</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main contents -->
+    <section class="">
+        <div class="py-28 px-4 mx-auto max-w-screen-xl lg:py-40 lg:px-6">
+            <div class="mx-auto max-w-screen-sm text-center">
+                <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-indigo-500">
+                    日本語</h1>
+                <p class="mb-4 text-3xl tracking-tight font-bold md:text-4xl ">版はまだできていません。</p>
+                <p class="mb-7 text-lg font-light text-gray-500">日本語ページはただいま準備中です。完成まで少々お待ち下さい。</p>
+                <a href="/"
+                    class="inline-flex py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">英語版トップページへ</a>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="bg-gray-100">
+            <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+                <p class="text-gray-500 text-sm text-center sm:text-left">
+                    &copy; 2024 Dateutils created by
+                    <a href="https://twitter.com/watarumorioka" rel="noopener noreferrer" class="text-gray-600 ml-0.5"
+                        target="_blank">@watarumorioka</a>
+                </p>
+                <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+                    <a href="/terms.html" class="text-sm ml-3 text-gray-500">Terms</a>
+                    <a href="https://github.com/wmorioka/dateutils" target="_blank" class="ml-3 text-gray-500">
+                        <svg viewBox="0 0 30 30" class="w-5 h-5 fill-current">
+                            <path
+                                d="M15 1.875C7.75195 1.875 1.875 7.9043 1.875 15.334C1.875 21.2812 5.63672 26.3203 10.8516 28.1016C10.9247 28.1175 10.9994 28.1253 11.0742 28.125C11.5605 28.125 11.748 27.7676 11.748 27.457C11.748 27.1348 11.7363 26.291 11.7305 25.166C11.2963 25.2678 10.8522 25.3209 10.4062 25.3242C7.88086 25.3242 7.30664 23.3613 7.30664 23.3613C6.70898 21.8086 5.84766 21.3926 5.84766 21.3926C4.70508 20.5898 5.8418 20.5664 5.92969 20.5664H5.93555C7.25391 20.6836 7.94531 21.9609 7.94531 21.9609C8.60156 23.1094 9.48047 23.4316 10.2656 23.4316C10.7848 23.4213 11.2959 23.3015 11.7656 23.0801C11.8828 22.2129 12.2227 21.6211 12.5977 21.2812C9.68555 20.9414 6.62109 19.7871 6.62109 14.6309C6.62109 13.1602 7.13086 11.959 7.96875 11.0215C7.83398 10.6816 7.38281 9.31055 8.09766 7.45898C8.19354 7.43604 8.29209 7.42619 8.39062 7.42969C8.86523 7.42969 9.9375 7.61133 11.707 8.8418C13.8572 8.24022 16.1311 8.24022 18.2812 8.8418C20.0508 7.61133 21.123 7.42969 21.5977 7.42969C21.6962 7.42619 21.7947 7.43604 21.8906 7.45898C22.6055 9.31055 22.1543 10.6816 22.0195 11.0215C22.8574 11.9648 23.3672 13.166 23.3672 14.6309C23.3672 19.7988 20.2969 20.9355 17.373 21.2695C17.8418 21.6855 18.2637 22.5059 18.2637 23.7598C18.2637 25.5586 18.2461 27.0117 18.2461 27.4512C18.2461 27.7676 18.4277 28.125 18.9141 28.125C18.9928 28.1253 19.0713 28.1175 19.1484 28.1016C24.3691 26.3203 28.125 21.2754 28.125 15.334C28.125 7.9043 22.248 1.875 15 1.875Z">
+                            </path>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/wmorioka/" target="_blank" class="ml-3 text-gray-500">
+                        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+                            <path stroke="none"
+                                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+                            <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                        </svg>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

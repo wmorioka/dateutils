@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onBeforeMount, nextTick } from 'vue'
 import Multiselect from 'vue-multiselect'
 import { timezones } from '../lib/timezones'
 import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs, createOptionList } from './lib/timezoneTableFunctions'
@@ -22,33 +22,31 @@ const setRowRef = (type, index) => (el) => {
         rowRefs.value[index] = el
     }
 }
-init()
 
 onMounted(() => {
     updateCurrentTime()
 })
 const updateCurrentTime = () => {
     let currentTimeTop = 0
-    console.log(headerRowRefs.value)
+    // console.log(headerRowRefs.value)
     // Calc header rows height
     headerRowRefs.value.forEach(el => {
         currentTimeTop += el.getBoundingClientRect().height
     })
     dayjs.extend(utc)
     const nowInUTC = dayjs().utc()
-    console.log(`Now in UTC is ${nowInUTC.format()}`)
+    // console.log(`Now in UTC is ${nowInUTC.format()}`)
     for (let i = 0; i < nowInUTC.hour(); i++) {
         currentTimeTop += rowRefs.value[i].getBoundingClientRect().height
     }
     currentTimeTop += (rowRefs.value[0].getBoundingClientRect().height * (nowInUTC.minute() / 60))
     currentTime.value.style.top = `${currentTimeTop}px`
 }
-
-function init(){
+onBeforeMount(() => {
     options.value = createOptionList(timezones)
     const savedData = getTimezoneIDs()
-    if (savedData === null){
-        console.log('Set default timezones')
+    if (savedData === null) {
+        // console.log('Set default timezones')
         selectedTimezoneIDs.value = [
             'UTC-8:00_PST',
             'UTC-5:00_EST',
@@ -59,28 +57,28 @@ function init(){
     } else {
         selectedTimezoneIDs.value = savedData
     }
-    
+
     updateTimezoneData()
 
     intervalID.value = setInterval(() => {
         updateCurrentTime()
     }, 1000 * 60)
+})
 
-}
 function updateTimezoneData() {
     timezoneData.value = createTimezoneData(selectedTimezoneIDs.value)
 }
 /**
  * Add a timezone to table
  */
-async function addTimezone(){
+const addTimezone = async () => {
     if (selectedOption.value === undefined
      || selectedTimezoneIDs.value.indexOf(selectedOption.value.id) > -1) {
         return false
     }
-    console.log('selected option =', selectedOption.value.id)
+    // console.log('selected option =', selectedOption.value.id)
     selectedTimezoneIDs.value.push(selectedOption.value.id)
-    console.log(selectedTimezoneIDs.value)
+    // console.log(selectedTimezoneIDs.value)
     updateTimezoneData()
     saveTimezoneIDs(selectedTimezoneIDs.value)
     await nextTick()
@@ -90,19 +88,19 @@ async function addTimezone(){
  * Delete timezone from selected timezones
  * @param {string} id - timezone id
  */
-function deleteTimezone(id){
+const deleteTimezone = (id) => {
     const index = selectedTimezoneIDs.value.indexOf(id)
     if (index > -1) {
         selectedTimezoneIDs.value.splice(index, 1)
     }
-    console.log(selectedTimezoneIDs.value)
+    // console.log(selectedTimezoneIDs.value)
     updateTimezoneData()
     saveTimezoneIDs(selectedTimezoneIDs.value)
 }
 /**
  * Toggle delete buttons visibility
  */
-function toggleDeleteButtons(){
+const toggleDeleteButtons = () => {
     isDeleteButtonsVisible.value = !isDeleteButtonsVisible.value
 }
 

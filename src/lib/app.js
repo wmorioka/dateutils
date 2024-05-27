@@ -7,6 +7,4 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleMenu.classList.toggle("hamburger-toggle")
         menu.classList.toggle("hidden")
     }
-});
-console.log("app.js loaded")
-
+})

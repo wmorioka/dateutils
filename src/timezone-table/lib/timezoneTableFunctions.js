@@ -26,7 +26,7 @@ const tableClassSettings = {
     '22': 'bg-slate-600 text-white',
     '23': 'bg-slate-700 text-white',
 }
-function compareTimezone(a, b){
+const compareTimezone = (a, b) => {
     const nameA = a.zoneInfo.abbreviation.toUpperCase()
     const nameB = b.zoneInfo.abbreviation.toUpperCase()
     const offsetA = a.zoneInfo.offsetMinites
@@ -42,7 +42,7 @@ function compareTimezone(a, b){
  * @param {Array} selectedTimezoneIDs - list of timezone id
  * @returns {Array} 
  */
-export function createTimezoneData(selectedTimezoneIDs){
+export const createTimezoneData = (selectedTimezoneIDs) => {
     let result = []
     for (let i = 0; i < selectedTimezoneIDs.length; i++) {
         if (timezones[selectedTimezoneIDs[i]] === undefined) {
@@ -80,7 +80,7 @@ export function createTimezoneData(selectedTimezoneIDs){
     return result
 }
 
-export function saveTimezoneIDs(data){
+export const saveTimezoneIDs = (data) => {
     try {
         localStorage.setItem(timezonesStorageKey, JSON.stringify(data))
     } catch (e) {
@@ -89,7 +89,7 @@ export function saveTimezoneIDs(data){
     }
     return true
 }
-export function getTimezoneIDs(){
+export const getTimezoneIDs = () => {
     let data = []
     try {
         data = localStorage.getItem(timezonesStorageKey)

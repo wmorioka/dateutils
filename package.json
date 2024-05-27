@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "devcss": "tailwindcss -i src/input.css -o src/dist.css --watch",
     "buildcss": "tailwindcss -i src/input.css -o src/dist.css --minify",
-    "deploy": "source .env && s3cmd --no-mime-magic --acl-public --delete-removed --delete-after sync dist/ s3://$BUCKET_NAME",
+    "deploy": "source .env && s3cmd --no-mime-magic --acl-public sync dist/ s3://$BUCKET_NAME",
     "test": "vitest"
   },
   "dependencies": {

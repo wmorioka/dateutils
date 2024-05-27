@@ -25,7 +25,7 @@ import dayjs from 'dayjs'
  *  },
  * ]
  */
-export function createMonthData(date, holidays, selectStartDate = null, selectEndDate = null) {
+export const createMonthData = (date, holidays, selectStartDate = null, selectEndDate = null) => {
     let tmpDate = date
     let result = []
     // console.log(`selectStartDate is ${selectStartDate}`)
@@ -92,8 +92,8 @@ export function createMonthData(date, holidays, selectStartDate = null, selectEn
         obj.days = days
         result.push(obj)
     }
-    console.log('monthsData is ...')
-    console.log(result)
+    // console.log('monthsData is ...')
+    // console.log(result)
     return result
 }
 
@@ -107,7 +107,7 @@ export function createMonthData(date, holidays, selectStartDate = null, selectEn
  *   businessDays: 5
  * }
  */
-export function createSelectedRangeInfo(monthData, selectStartDate, selectEndDate){
+export const createSelectedRangeInfo = (monthData, selectStartDate, selectEndDate) => {
     const format = 'YYYY/MM/DD'
     let obj = { label: '', days: 0, businessDays: 0 }
     if (selectStartDate === null || selectEndDate === null){

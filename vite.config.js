@@ -20,6 +20,7 @@ export default defineConfig({
         timezoneConverter: resolve(root, 'timezone-converter.html'),
         indexJP: resolve(root, 'jp/index.html'),
         notfound: resolve(root, '404.html'),
+        terms: resolve(root, 'terms.html'),
       },
     },
   },

@@ -279,8 +279,10 @@
     }
     
     div.multiselect__tags{
+        /* width: calc(100vw - 2.5rem - 0.5rem - 61px - 28px - 17px); */
+        width: calc(100vw - 3rem - 106px);
         @apply
-            w-64
+            /* w-64 */
             sm:w-[30rem]
             lg:w-[41rem]
             h-[43px]

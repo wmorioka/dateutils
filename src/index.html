@@ -7,10 +7,11 @@
     <link href="/dist.css" rel="stylesheet">
     <meta name="description" content="Your one-stop solution for all date and time needs. Explore our user-friendly Calendar, comprehensive Timezone Table, and efficient Timezone Converter. Simplify your scheduling and global time management with Dateutils today!">
     
+    <meta property="og:site_name" content="Dateutils">
     <meta property="og:title" content="Dateutils">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dateutils.net">
-    <meta property="og:image" content="/img/og-top.jpg">
+    <meta property="og:image" content="https://dateutils.net/img/og-top.jpg">
     <meta property="og:description" content="Your one-stop solution for all date and time needs. Explore our user-friendly Calendar, comprehensive Timezone Table, and efficient Timezone Converter.">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -19,7 +20,16 @@
 
     <meta name="theme-color" content="#6366f1">
     <script type="module" src="./lib/app.js"></script>
-    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8NK64NJECQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-8NK64NJECQ');
+    </script>
+
 </head>
 <body>
     <header class="text-gray-800 body-font border-b border-gray-200">

@@ -319,7 +319,7 @@ const onMultiselectOpen = () => {
                             <div class="tooltip">
                                 <span class="tooltip-contents-copied right-0"
                                     :class="{ hidden: !isCopyTooltipVisible[i] }">Copied</span>
-                                <button type="button" title="Copy" @click="copyResultText(i)" 
+                                <button type="button" title="Copy" @click="copyResultText(i)"
                                     class="copy-button py-2 px-3 h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                                     <svg class="js-clipboard-default flex-shrink-0 size-4"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -336,6 +336,15 @@ const onMultiselectOpen = () => {
                     </div>
                 </template>
 
+            </div>
+        </div>
+        
+        <div class="lg:w-4/5 mx-auto">
+            <div class="text-sm">
+                Timezones on this site are based on <a
+                    href="https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations" class="text-indigo-500"
+                    target="_blank" rel="noopener noreferrer">Wikipedia</a>. As
+                timezones may change, we cannot guarantee that our information is free of errors.
             </div>
         </div>
 

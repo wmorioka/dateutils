@@ -185,6 +185,16 @@ const toggleDeleteButtons = () => {
                 </table>
             </div>
         </div>
+
+        <div class="lg:w-4/5 mx-auto">
+            <div class="text-sm">
+                Timezones on this site are based on <a
+                    href="https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations" class="text-indigo-500"
+                    target="_blank" rel="noopener noreferrer">Wikipedia</a>. As
+                timezones may change, we cannot guarantee that our information is free of errors.
+            </div>
+        </div>
+
     </div>
 </template>
 

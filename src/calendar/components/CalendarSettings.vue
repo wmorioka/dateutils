@@ -80,9 +80,6 @@ defineEmits(['save', 'addPreset'])
                         }}</button>
                 </template>
             </div>
-            <div class=" mb-2">
-                You are <span class="font-bold">super welcome</span> to add a preset by opening a pull request.
-            </div>
         </div>
     </div>
 </template>

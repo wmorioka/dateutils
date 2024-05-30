@@ -1,6 +1,6 @@
 # Dateutils
 
-[Dateutils](https://dateutils.net/) is a website offering a couple free tools: Calendar, Timezone Table, and TImezone Converter. This project is open source and aims to provide useful tools for users. Contributions are welcome!
+[Dateutils](https://dateutils.net/) is a website offering some free tools: Calendar, Timezone Table, and TImezone Converter. This project is open source and aims to provide useful tools for users. Contributions are welcome!
 
 ## Table of Contents
 
@@ -15,11 +15,9 @@
 
 ### 1. Calendar
 
-This is a simple calendar. 
-
-- Switching display months: one or two
+- Toggle display months: one or two
 - Calendar dates are selectable
-- Selecting two days, selected range info is displayed which contains duration, days and business days
+- Select two days, selected range info will be displayed, including duration, days and business days
 - Responsive design
 - Set your own holidays
 - Holidays data is stored in the browser's local storage
@@ -34,8 +32,8 @@ This is a simple calendar.
 ### 3. Timezone Converter
 
 - Convert date to another timezone
-- Convert results are displayed in six different format
-- Easy to copy convert results
+- Conversion results are displayed in six different formats
+- Easy to copy conversion results
 
 ## Installation
 
@@ -74,7 +72,7 @@ npm run devcss
 
 ## Libraries
 
-This project uses the following libraries or tools.
+This project uses the following libraries and tools.
 
 - [Vue.js](https://vuejs.org/)
 - [Vite](https://vitejs.dev/)

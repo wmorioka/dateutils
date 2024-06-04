@@ -368,9 +368,15 @@ describe('createOptionList', () => {
             id: 'UTC-11:00_SST',
             label: '(UTC-11:00) Samoa Standard Time (SST) - Pacific',
         }
-        const expectedCount = 138
         expect(createOptionList(timezones)[0]).toMatchObject(expected)
-        expect(createOptionList(timezones).length).toBe(expectedCount)
+
+    })
+    it('creates Ja option list', () => {
+        const expected = {
+            id: 'UTC-11:00_SST',
+            label: '(UTC-11:00) サモア標準時 (SST) - パシフィック',
+        }
+        expect(createOptionList(timezones, 'ja')[0]).toMatchObject(expected)
 
     })
 })

@@ -24,9 +24,12 @@ defineProps([
                     </svg>
                 </span>
             </span>
-            <span class="block">{{ days }} days ({{ businessDays }} business days)</span>
+            <span class="block">
+                {{ $t('calendar.selectedRange.day', days) }} ({{ $t('calendar.selectedRange.businessDay',
+                businessDays) }})
+            </span>
             <!-- close button -->
-            <button class="absolute right-1 top-1" @click="$emit('close')">
+            <button :title="$t('calendar.selectedRange.close')" class="absolute right-1 top-1" @click="$emit('close')">
                 <svg class="w-6 h-6 inline cursor-pointer flex-shrink-0 size-4" viewBox="0 0 24 24">
                     <path
                         d="M18,6h0a1,1,0,0,0-1.414,0L12,10.586,7.414,6A1,1,0,0,0,6,6H6A1,1,0,0,0,6,7.414L10.586,12,6,16.586A1,1,0,0,0,6,18H6a1,1,0,0,0,1.414,0L12,13.414,16.586,18A1,1,0,0,0,18,18h0a1,1,0,0,0,0-1.414L13.414,12,18,7.414A1,1,0,0,0,18,6Z" />

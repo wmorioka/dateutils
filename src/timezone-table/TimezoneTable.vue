@@ -5,6 +5,7 @@ import { timezones } from '../lib/timezones'
 import { createTimezoneData, saveTimezoneIDs, getTimezoneIDs, createOptionList } from './lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { useI18n } from 'vue-i18n'
 
 const options = ref([])
 const selectedOption = ref()
@@ -15,6 +16,7 @@ const rowRefs = ref([])
 const headerRowRefs = ref([])
 const currentTime = ref()
 const intervalID = ref(0)
+const userLocale = ref()
 const setRowRef = (type, index) => (el) => {
     if (type === 'header') {
         headerRowRefs.value[index] = el
@@ -43,7 +45,9 @@ const updateCurrentTime = () => {
     currentTime.value.style.top = `${currentTimeTop}px`
 }
 onBeforeMount(() => {
-    options.value = createOptionList(timezones)
+    const { locale } = useI18n()
+    userLocale.value = locale.value
+    options.value = createOptionList(timezones, locale.value)
     const savedData = getTimezoneIDs()
     if (savedData === null) {
         // console.log('Set default timezones')
@@ -112,23 +116,28 @@ const toggleDeleteButtons = () => {
             <!-- Controls -->
 
             <div class="flex">
-                <multiselect v-model="selectedOption" track-by="label" label="label" placeholder="Select timezone"
-                    :allow-empty="false" :options="options" deselect-label="">
+                <multiselect v-model="selectedOption" track-by="label" label="label"
+                    :placeholder="$t('multiselect.placeholder')" :selectedLabel="$t('multiselect.selectedLabel')"
+                    :selectLabel="$t('multiselect.selectLabel')" :allow-empty="false" :options="options"
+                    deselect-label="">
+                    <template #noResult>
+                        <span>{{ $t('multiselect.noResult') }}</span>
+                    </template>
                 </multiselect>
 
                 <button id="button-add" @click="addTimezone" type="button"
                     class="ml-2 py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-full md:w-20 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                    Add
+                    {{ $t('timezoneTable.addButton') }}
                 </button>
             </div>
             <div>
                 <button id="button-edit" class="text-indigo-500" @click="toggleDeleteButtons"
                     :class="{ hidden: isDeleteButtonsVisible }">
-                    Edit
+                    {{ $t('timezoneTable.editButton') }}
                 </button>
                 <button id="button-done" class="text-indigo-500" @click="toggleDeleteButtons"
                     :class="{ hidden: !isDeleteButtonsVisible }">
-                    Done
+                    {{ $t('timezoneTable.doneButton') }}
                 </button>
             </div>
         </div>
@@ -166,7 +175,13 @@ const toggleDeleteButtons = () => {
                         <tr id="header-abbreviation" :ref="setRowRef('header', 1)">
                             <template v-for="tz in timezoneData">
                                 <th class="timezone-header-cell">
-                                    <span :title="tz.zoneInfo.name">{{ tz.zoneInfo.abbreviation }}</span>
+                                    <template v-if="userLocale === 'en'">
+                                        <span :title="tz.zoneInfo.name">{{ tz.zoneInfo.abbreviation }}</span>
+                                    </template>
+                                    <template v-else-if="userLocale === 'ja'">
+                                        <span :title="tz.zoneInfo.nameJa">{{ tz.zoneInfo.abbreviation }}</span>
+                                    </template>
+
                                 </th>
                             </template>
                         </tr>
@@ -187,12 +202,7 @@ const toggleDeleteButtons = () => {
         </div>
 
         <div class="lg:w-4/5 mx-auto">
-            <div class="text-sm">
-                Timezones on this site are based on <a
-                    href="https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations" class="text-indigo-500"
-                    target="_blank" rel="noopener noreferrer">Wikipedia</a>. As
-                timezones may change, we cannot guarantee that our information is free of errors.
-            </div>
+            <div class="text-sm" v-html="$t('timezoneTable.notice')"></div>
         </div>
 
     </div>

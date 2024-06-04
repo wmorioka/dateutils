@@ -18,7 +18,10 @@ export default defineConfig({
         calendar: resolve(root, 'calendar.html'),
         timezoneTable: resolve(root, 'timezone-table.html'),
         timezoneConverter: resolve(root, 'timezone-converter.html'),
-        indexJP: resolve(root, 'jp/index.html'),
+        indexJa: resolve(root, 'ja/index.html'),
+        calendarJa: resolve(root, 'ja/calendar.html'),
+        timezoneTableJa: resolve(root, 'ja/timezone-table.html'),
+        timezoneConverterJa: resolve(root, 'ja/timezone-converter.html'),
         notfound: resolve(root, '404.html'),
         terms: resolve(root, 'terms.html'),
       },
@@ -29,6 +32,7 @@ export default defineConfig({
     globals: true,
     // simulate DOM with happy-dom
     // (requires installing happy-dom as a peer dependency)
-    environment: 'happy-dom'
+    environment: 'happy-dom',
+    setupFiles: ['src/test/unit.setup.js'],
   }
 });

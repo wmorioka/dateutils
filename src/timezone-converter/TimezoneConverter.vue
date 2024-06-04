@@ -5,8 +5,9 @@ import { timezones } from '../lib/timezones'
 import { createOptionList } from '../timezone-table/lib/timezoneTableFunctions'
 import dayjs from 'dayjs'
 import { validateDatetimeFormat, getConvertHistory, saveConvertHistory } from './lib/timezonConverterFunctions'
-import { convertFormats } from './lib/convertFormats'
+import { convertFormats, convertFormatsJa } from './lib/convertFormats'
 import DatePicker from '../calendar/components/DatePicker.vue'
+import { useI18n } from 'vue-i18n'
 
 const options = ref([])
 const date = ref()
@@ -22,6 +23,7 @@ const copyToolipTimers = ref([])
 const isCopyTooltipVisible = ref([])
 const isDatePickerVisible = ref(false)
 const datePickerDate = ref()
+const formats = ref()
 
 onMounted(() => {
     // Close DatePicker if user clicks outside DatePicker
@@ -39,9 +41,15 @@ onMounted(() => {
 })
 
 onBeforeMount(() => {
-    options.value = createOptionList(timezones)
+    const { locale } = useI18n()
+    if (locale.value === 'ja') {
+        formats.value = convertFormatsJa
+    } else {
+        formats.value = convertFormats
+    }
+    options.value = createOptionList(timezones, locale.value)
     date.value = dayjs().format('YYYY/MM/DD HH:mm')
-    for (let i = 0; i < convertFormats.length; i++) {
+    for (let i = 0; i < formats.value.length; i++) {
         results.value[i] = ''
         copyToolipTimers[i] = null
         isCopyTooltipVisible[i] = false
@@ -69,11 +77,11 @@ const convert = () => {
     isError = !validateDate()
     if (timezoneFrom.value === undefined){
         isError = true
-        timezoneFromError.value = 'Select timezone'
+        timezoneFromError.value = 'timezoneConverter.error.timezoneIsEmpty'
     }
     if (timezoneTo.value === undefined){
         isError = true
-        timezoneToError.value = 'Select timezone'
+        timezoneToError.value = 'timezoneConverter.error.timezoneIsEmpty'
     }
     if (isError) return false
     const targetDate = dayjs(date.value)
@@ -86,8 +94,8 @@ const convert = () => {
     let optionLabel = ''
     if (isAbbreviationChecked.value) optionLabel += ` ${to.abbreviation}`
     if (isUTCOffsetChecked.value) optionLabel += ` (UTC${to.offset})`
-    for (let i = 0; i < convertFormats.length; i++) {
-        results.value[i] = computedDate.format(convertFormats[i]) + optionLabel
+    for (let i = 0; i < formats.value.length; i++) {
+        results.value[i] = computedDate.format(formats.value[i]) + optionLabel
     }
     // save data
     const history = {}
@@ -112,9 +120,9 @@ const validateDate = () => {
     dateError.value = ''
     console.log(date.value)
     if (date.value === '' || date.value === undefined) {
-        dateError.value = 'Input date'
+        dateError.value = 'timezoneConverter.error.dateIsEmpty'
     } else if (!validateDatetimeFormat(date.value)) {
-        dateError.value = 'Date format is invalid'
+        dateError.value = 'timezoneConverter.error.dateIsInvalidFormat'
     }
     return dateError.value === ''
 }
@@ -165,6 +173,7 @@ const toggleDatePicker = () => {
 const onDatePickerClosed = () => {
     isDatePickerVisible.value = false
     date.value = datePickerDate.value.format('YYYY/MM/DD HH:mm')
+    validateDate()
 }
 /**
  * Handle multiselect open event
@@ -183,7 +192,7 @@ const onMultiselectOpen = () => {
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
                 <div class="sm:col-span-3">
                     <span class="inline-block  mt-2.5 ">
-                        Date
+                        {{ $t('timezoneConverter.date') }}
                     </span>
                 </div>
                 <!-- End Col -->
@@ -195,7 +204,8 @@ const onMultiselectOpen = () => {
                             class="py-2 px-3 mr-3 block text-base w-full placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             name="" placeholder="YYYY/MM/DD HH:mm" />
                         <div class="relative">
-                            <button id="toggle-date-picker" type="button" title="Pick a date" @click="toggleDatePicker"
+                            <button id="toggle-date-picker" type="button"
+                                :title="$t('timezoneConverter.calendarButton')" @click="toggleDatePicker"
                                 class="py-2 px-3  h-10 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
                                 <svg fill="none" class="w-4 h-4 fill-white" viewBox="0 0 24 24">
                                     <path
@@ -208,7 +218,7 @@ const onMultiselectOpen = () => {
                     </div>
                     <template v-if="dateError !== ''">
                         <div id="date-error" class="text-red-500 pl-[2px]">
-                            {{ dateError }}
+                            {{ $t(dateError) }}
                         </div>
                     </template>
                 </div>
@@ -216,21 +226,26 @@ const onMultiselectOpen = () => {
 
                 <div class="sm:col-span-3">
                     <span class="inline-block  mt-2.5">
-                        From
+                        {{ $t('timezoneConverter.from') }}
                     </span>
                 </div>
                 <!-- End Col -->
 
                 <div class="sm:col-span-9" id="timezone-from">
                     <div :class="{ 'multiselect-error': timezoneFromError !== ''}">
-                        <multiselect v-model="timezoneFrom" track-by="label" label="label" placeholder="Select timezone"
-                            :allow-empty="false" :options="options" deselect-label="" @select="selectFrom"
-                            @open="onMultiselectOpen">
+                        <multiselect v-model="timezoneFrom" track-by="label" label="label"
+                            :placeholder="$t('multiselect.placeholder')"
+                            :selectedLabel="$t('multiselect.selectedLabel')"
+                            :selectLabel="$t('multiselect.selectLabel')" :allow-empty="false" :options="options"
+                            deselect-label="" @select="selectFrom" @open="onMultiselectOpen">
+                            <template #noResult>
+                                <span>{{ $t('multiselect.noResult') }}</span>
+                            </template>
                         </multiselect>
                     </div>
                     <template v-if="timezoneFromError !== ''">
                         <div class="text-red-500 pl-[2px]">
-                            {{ timezoneFromError }}
+                            {{ $t(timezoneFromError) }}
                         </div>
                     </template>
                 </div>
@@ -238,21 +253,26 @@ const onMultiselectOpen = () => {
 
                 <div class="sm:col-span-3">
                     <span class="inline-block  mt-2.5">
-                        To
+                        {{ $t('timezoneConverter.to') }}
                     </span>
                 </div>
                 <!-- End Col -->
 
                 <div class="sm:col-span-9" id="timezone-to">
                     <div :class="{ 'multiselect-error': timezoneToError !== ''}">
-                        <multiselect v-model="timezoneTo" track-by="label" label="label" placeholder="Select timezone"
-                            :allow-empty="false" :options="options" deselect-label="" @select="selectTo"
-                            @open="onMultiselectOpen">
+                        <multiselect v-model="timezoneTo" track-by="label" label="label"
+                            :placeholder="$t('multiselect.placeholder')"
+                            :selectedLabel="$t('multiselect.selectedLabel')"
+                            :selectLabel="$t('multiselect.selectLabel')" :allow-empty="false" :options="options"
+                            deselect-label="" @select="selectTo" @open="onMultiselectOpen">
+                            <template #noResult>
+                                <span>{{ $t('multiselect.noResult') }}</span>
+                            </template>
                         </multiselect>
                     </div>
                     <template v-if="timezoneToError !== ''">
                         <div class="text-red-500 pl-[2px]">
-                            {{ timezoneToError }}
+                            {{ $t(timezoneToError) }}
                         </div>
                     </template>
                 </div>
@@ -260,7 +280,7 @@ const onMultiselectOpen = () => {
 
                 <div class="sm:col-span-3">
                     <span class="inline-block  mt-2.5">
-                        Options
+                        {{ $t('timezoneConverter.options') }}
                     </span>
                 </div>
 
@@ -268,14 +288,17 @@ const onMultiselectOpen = () => {
                     <div class="py-2 flex items-center">
                         <input id="abbreviatedTimezoneName" type="checkbox" v-model="isAbbreviationChecked"
                             class="w-4 h-4 accent-indigo-500">
-                        <label for="abbreviatedTimezoneName" class="ml-2 text-gray-700">Abbreviated Timezone
-                            Name</label>
+                        <label for="abbreviatedTimezoneName" class="ml-2 text-gray-700">
+                            {{ $t('timezoneConverter.abbreviatedTimezoneName') }}
+                        </label>
                     </div>
 
                     <div class="py-2 flex items-center">
                         <input id="UTCOffset" type="checkbox" v-model="isUTCOffsetChecked"
                             class="w-4 h-4 accent-indigo-500">
-                        <label for="UTCOffset" class="ml-2 text-gray-700">UTC Offset</label>
+                        <label for="UTCOffset" class="ml-2 text-gray-700">
+                            {{ $t('timezoneConverter.UTCOffset') }}
+                        </label>
                     </div>
 
                 </div>
@@ -285,30 +308,30 @@ const onMultiselectOpen = () => {
             <div class="mb-12 mt-6 w-full text-center">
                 <button id="convert-button" type="button" @click="convert"
                     class="py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-40 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                    Convert
+                    {{ $t('timezoneConverter.convertButton') }}
                 </button>
             </div>
             <!-- Results -->
             <div class="mb-6">
                 <h2 class="text-xl font-bold">
-                    Results
+                    {{ $t('timezoneConverter.results') }}
                 </h2>
                 <p class="text-sm">
-                    You can copy converted results by clicking <svg
+                    {{ $t('timezoneConverter.resultsCaption1') }}<svg
                         class="inline js-clipboard-default flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                    </svg> buttons.
+                    </svg>{{ $t('timezoneConverter.resultsCaption2') }}
                 </p>
             </div>
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
 
-                <template v-for="(_, i) in convertFormats">
+                <template v-for="(_, i) in formats">
                     <div class="sm:col-span-3">
                         <span class="inline-block  mt-2.5 ">
-                            Format {{ i + 1 }}
+                            {{ $t('timezoneConverter.format') }} {{ i + 1 }}
                         </span>
                     </div>
                     <div class="sm:col-span-9">
@@ -338,14 +361,9 @@ const onMultiselectOpen = () => {
 
             </div>
         </div>
-        
+
         <div class="lg:w-4/5 mx-auto">
-            <div class="text-sm">
-                Timezones on this site are based on <a
-                    href="https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations" class="text-indigo-500"
-                    target="_blank" rel="noopener noreferrer">Wikipedia</a>. As
-                timezones may change, we cannot guarantee that our information is free of errors.
-            </div>
+            <div class="text-sm" v-html="$t('timezoneConverter.notice')"></div>
         </div>
 
     </div>

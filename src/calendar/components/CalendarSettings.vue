@@ -21,7 +21,7 @@ defineEmits(['save', 'addPreset'])
 <template>
     <div class="lg:w-4/5 mb-10 mx-auto">
         <div id="toggle-settings" class="cursor-pointer inline-block" @click="toggleSettings">
-            <span class="text-indigo-500">Settings</span><svg id="settings-arrow-down"
+            <span class="text-indigo-500">{{ $t('calendar.settings.label') }}</span><svg id="settings-arrow-down"
                 :class="{ hidden: isSettingsOpened }" class="inline-block fill-indigo-400 w-6 h-6" viewBox="0 0 24 24"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -34,17 +34,11 @@ defineEmits(['save', 'addPreset'])
             </svg>
         </div>
         <div id="settings-container" class="py-2" :class="{ hidden: !isSettingsOpened }">
-            <div class=" mb-3">
-                You can set your holidays. Save the holidays data in CSV format, then holidays will be filled in red
-                circle.
-                Acceptable CSV format is <span
-                    class="bg-gray-100 text-red-400 rounded-md p-1 text-sm font-mono">YYYY/MM/DD,Holiday name</span>.
-                Holidays data is stored in your browser's local storage. Your data is not sent to the server.
-            </div>
+            <div class=" mb-3" v-html="$t('calendar.settings.description')"></div>
             <div class="grid sm:grid-cols-12 gap-2 sm:gap-6">
                 <div class="sm:col-span-3">
                     <label for="holidays-data" class="inline-block  mt-2.5 ">
-                        Holiday Data
+                        {{ $t('calendar.settings.inputLabel') }}
                     </label>
                 </div>
 
@@ -53,7 +47,8 @@ defineEmits(['save', 'addPreset'])
                         <textarea v-model="holidaysCSVText"
                             class="flex-1 w-full md:w-2/3 px-4 py-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             :class="{ error: errors.length > 0 }" id="holidays-data"
-                            placeholder="YYYY/MM/DD,Holiday name" name="holidays-data" rows="7" cols="40"></textarea>
+                            :placeholder="$t('calendar.settings.placeholder')" name="holidays-data" rows="7"
+                            cols="40"></textarea>
                     </div>
                     <template v-for="error in errors">
                         <div class="text-red-500">
@@ -66,13 +61,13 @@ defineEmits(['save', 'addPreset'])
                 <div class="flex justify-center tooltip">
                     <button type="button" @click="$emit('save')"
                         class="py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-40 transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                        Save
+                        {{ $t('calendar.settings.saveButtonLabel') }}
                     </button>
                     <span class="tooltip-contents-copied" :class="{ hidden: !isSaveTooltipVisible }">Saved</span>
                 </div>
             </div>
             <div class=" mb-2">
-                We offer some holidays presets. Click below links to add holidays data and then save the data.
+                {{ $t('calendar.settings.presetDescription') }}
             </div>
             <div class=" mb-2">
                 <template v-for="(value, key) in presets">

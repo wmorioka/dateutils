@@ -104,12 +104,17 @@ export const getTimezoneIDs = () => {
     }
 }
 
-export const createOptionList = (timezones) => {
+export const createOptionList = (timezones, locale = 'en') => {
     const options = []
     for (const id in timezones) {
         if (Object.hasOwnProperty.call(timezones, id)) {
             const element = timezones[id];
-            const label = `(UTC${element['offset']}) ${element['name']} (${element['abbreviation']}) - ${element['location']}`
+            let label = `(UTC${element['offset']}) `
+            if (locale === 'en') {
+                label += `${element['name']} (${element['abbreviation']}) - ${element['location']}`
+            } else if (locale === 'ja') {
+                label += `${element['nameJa']} (${element['abbreviation']}) - ${element['locationJa']}`
+            }
             options.push({ id: id, label: label })
         }
     }

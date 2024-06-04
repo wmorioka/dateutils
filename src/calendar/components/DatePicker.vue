@@ -110,7 +110,7 @@ const now = () => {
                 <div>
                     <button type="button" @click="doneButtonClick"
                         class="py-[3px] px-3 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 focus:ring-indigo-500 text-white w-auto transition ease-in duration-200 text-center text-base shadow-md focus:outline-none rounded-lg">
-                        Done
+                        {{ $t('calendar.datePicker.doneButton') }}
                     </button>
                 </div>
             </div>

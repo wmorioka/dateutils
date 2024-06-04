@@ -41,7 +41,8 @@ export const createMonthData = (date, holidays, selectStartDate = null, selectEn
         let obj = { 
             year: tmpDateYear,
             month: tmpDateMonth + 1,
-            label: tmpDate.format('MMMM YYYY')
+            label: tmpDate.format('MMMM YYYY'),
+            labelDate: tmpDate.clone()
         }
         let days = []
         for (let j = 0; j < endOfMonth; j++) {

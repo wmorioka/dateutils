@@ -118,7 +118,7 @@ const textChange = () => {
  */
 const validateDate = () => {
     dateError.value = ''
-    console.log(date.value)
+    // console.log(date.value)
     if (date.value === '' || date.value === undefined) {
         dateError.value = 'timezoneConverter.error.dateIsEmpty'
     } else if (!validateDatetimeFormat(date.value)) {

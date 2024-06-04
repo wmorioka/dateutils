@@ -44,7 +44,7 @@ const updateHolidaysData = () => {
 const updateMonthData = () => {
     monthData.value = createMonthData(baseDate.value, holidays.value, selectStartDate.value, selectEndDate.value)
     selectedRangeInfo.value = createSelectedRangeInfo(monthData.value, selectStartDate.value, selectEndDate.value)
-    console.log(selectedRangeInfo.value)
+    // console.log(selectedRangeInfo.value)
 }
 /**
  * Handle click event of Show prev and Show next.

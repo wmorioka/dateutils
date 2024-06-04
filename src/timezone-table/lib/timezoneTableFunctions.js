@@ -46,7 +46,7 @@ export const createTimezoneData = (selectedTimezoneIDs) => {
     let result = []
     for (let i = 0; i < selectedTimezoneIDs.length; i++) {
         if (timezones[selectedTimezoneIDs[i]] === undefined) {
-            console.log(`id does not exist in timezone list: ${selectedTimezoneIDs[i]}`)
+            // console.log(`id does not exist in timezone list: ${selectedTimezoneIDs[i]}`)
             continue
         }
         let tmp = {}

@@ -97,7 +97,7 @@ export class Holidays {
         text.split("\n").forEach(row => {
             const match = row.match(pattern)
             if (match === null) {
-                console.log(`Holidays CSV format does not match: ${row}`)
+                // console.log(`Holidays CSV format does not match: ${row}`)
             } else {
                 let day = {}
                 day[Number(match[3])] = match[4]
@@ -112,8 +112,8 @@ export class Holidays {
                 }
             }
         })
-        console.log(`class Holidays: Holidays Object is ...`)
-        console.log(obj)
+        // console.log(`class Holidays: Holidays Object is ...`)
+        // console.log(obj)
         return obj
     }
 }

@@ -19,7 +19,7 @@ const seletedDate = ref()
 const init = () => {
     // this is workaround
     seletedDate.value = date.value
-    console.log(`DatePicker date is ${seletedDate.value}`)
+    // console.log(`DatePicker date is ${seletedDate.value}`)
     baseDate.value = dayjs(seletedDate.value.format('YYYY-MM-DD'))
     updateMonthData()
     hour.value = date.value.hour()
@@ -32,7 +32,7 @@ const updateMonthData = () => {
 init()
 
 const move = (direction) => {
-    console.log(`direction is ${direction}`)
+    // console.log(`direction is ${direction}`)
     if (direction === 'prev') {
         baseDate.value = baseDate.value.subtract(1, 'month')
     } else {

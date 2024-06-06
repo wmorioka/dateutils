@@ -1083,10 +1083,6 @@ video {
   fill: #fff;
 }
 
-.stroke-gray-400 {
-  stroke: #9ca3af;
-}
-
 .stroke-gray-500 {
   stroke: #6b7280;
 }
@@ -1387,7 +1383,7 @@ body * {
 
 section.main {
   display: flex;
-  min-height: calc(100vh - 150px);
+  min-height: calc(100svh - 150px);
   flex-direction: column;
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
@@ -1395,7 +1391,7 @@ section.main {
 
 @media (min-width: 640px) {
   section.main {
-    min-height: calc(100vh - 122px);
+    min-height: calc(100svh - 122px);
   }
 }
 

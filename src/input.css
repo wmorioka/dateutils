@@ -11,8 +11,8 @@
             flex
             flex-col
             text-gray-800
-            sm:min-h-[calc(100vh-122px)]
-            min-h-[calc(100vh-150px)]
+            sm:min-h-[calc(100svh-122px)]
+            min-h-[calc(100svh-150px)]
     }
     .hamburger-toggle {
         @apply [&>div]:h-0 [&>div]:bg-white [&>div]:before:translate-y-0 [&>div]:before:rotate-45 [&>div]:after:translate-y-0 [&>div]:after:-rotate-45;

@@ -1385,6 +1385,14 @@ body * {
   -webkit-font-smoothing: antialiased;
 }
 
+section.main {
+  min-height: calc(100vh - 122px);
+  display: flex;
+  flex-direction: column;
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity))
+}
+
 .hamburger-toggle>div {
   height: 0px;
   --tw-bg-opacity: 1;
@@ -1747,21 +1755,6 @@ button.switch-selected>svg {
   margin-right: 1.25rem;
 }
 
-/* 
-    For Vue Apps
-    Avoid flapping
-     */
-
-#calendar-app {
-  min-height: 474px;
-}
-
-@media (min-width: 768px) {
-  #calendar-app {
-    min-height: 694px;
-  }
-}
-
 textarea.error {
   --tw-border-opacity: 1;
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
@@ -1770,10 +1763,6 @@ textarea.error {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(239 68 68 / var(--tw-ring-opacity));
-}
-
-#timezone-converter-app {
-  min-height: 786px;
 }
 
 /* Overwrite Multiselect Styles */

@@ -186,7 +186,7 @@ const toggleDeleteButtons = () => {
                             </template>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="timezone-table-body">
                         <template v-for="i in 24">
                             <tr :ref="setRowRef('row', i-1)">
                                 <template v-for="tz in timezoneData">

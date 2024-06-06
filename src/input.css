@@ -235,6 +235,11 @@
             min-w-20
             ;
     }
+    .timezone-table-body tr:hover td{
+        @apply
+            bg-indigo-500
+            text-white
+    }
     .calendar-header-container{
         @apply
             flex mb-5 pt-1

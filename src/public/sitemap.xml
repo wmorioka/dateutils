@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>https://dateutils.net/</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/calendar.html</loc>
+  <lastmod>2024-06-07T05:23:42+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/timezone-table.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/timezone-converter.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/ja/</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/terms.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/ja/calendar.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/ja/timezone-table.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://dateutils.net/ja/timezone-converter.html</loc>
+  <lastmod>2024-06-07T05:23:43+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+</urlset>

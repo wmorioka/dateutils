@@ -40,7 +40,7 @@ function onCellClick(date) {
                     {{ $t('calendar.weekdays.thursday') }}<span class="calendar-header-small-letters">{{ $t('calendar.weekdaysSmallLetters.thursday') }}</span>
                 </span>
                 <span class="calendar-header">
-                    {{ $t('calendar.weekdays.friday') }}<span class="calendar-header-small-letters">{{ $t('calendar.weekdaysSmallLetters.sunday') }}</span>
+                    {{ $t('calendar.weekdays.friday') }}<span class="calendar-header-small-letters">{{ $t('calendar.weekdaysSmallLetters.friday') }}</span>
                 </span>
                 <span class="calendar-header">
                     {{ $t('calendar.weekdays.saturday') }}<span class="calendar-header-small-letters">{{ $t('calendar.weekdaysSmallLetters.saturday') }}</span>
